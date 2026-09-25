@@ -30,15 +30,19 @@ def main():
     ap.add_argument("--allow-missing", nargs="*", default=[])
     args = ap.parse_args()
     errors, warnings = [], []
-    pages = [p for p in site_files() if p.suffix == ".html" and "fst-1kb" not in p.parts]
+    htmls = [p for p in site_files() if p.suffix == ".html"]
+    # site pages carry the shared header; widget files under fish-genomics/fst-*/ are figures, link-checked only
+    def is_widget(p):
+        return any(part.startswith("fst-") for part in p.relative_to(ROOT).parts)
+    pages = [p for p in htmls if not is_widget(p)]
     if not (ROOT / ".nojekyll").exists():
         errors.append(".nojekyll missing (GitHub would run Jekyll over the site)")
-    for page in pages:
+    for page in htmls:
         text = page.read_text()
         rel = page.relative_to(ROOT)
         if "<title>" not in text:
             errors.append(f"{rel}: no <title>")
-        if 'aria-current="page"' not in text:
+        if page in pages and 'aria-current="page"' not in text:
             errors.append(f"{rel}: no current nav tab")
         for target in ATTR.findall(text):
             if re.match(r"^(https?:|mailto:|#|data:)", target):
@@ -66,7 +70,7 @@ def main():
             warnings.append(f"{p.relative_to(ROOT)}: {s/1e6:.1f} MB is large for a web page")
         if s > 1_000_000:
             big.append((s, p.relative_to(ROOT)))
-    print(f"pages checked: {len(pages)} | site total: {total/1e6:.1f} MB | files >1 MB: {len(big)}")
+    print(f"pages checked: {len(pages)} | html files link-checked: {len(htmls)} | site total: {total/1e6:.1f} MB | files >1 MB: {len(big)}")
     for s, p in sorted(big, reverse=True)[:8]:
         print(f"  {s/1e6:7.1f} MB  {p}")
     for w in warnings:
