@@ -1,0 +1,55 @@
+/* Lingyu Zhan — personal site. Plain CSS, no build step. */
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --line: #d8dee4;
+  --accent: #0b5fff; --card: #f6f8fa; --max: 1080px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1115; --fg: #e6e8eb; --muted: #9aa4b2; --line: #2a2f3a; --accent: #7ab0ff; --card: #171a21;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1115; --fg: #e6e8eb; --muted: #9aa4b2; --line: #2a2f3a; --accent: #7ab0ff; --card: #171a21;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 16px; }
+header.site { border-bottom: 1px solid var(--line); }
+header.site .wrap { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  gap: 8px 24px; min-height: 56px; padding-top: 6px; padding-bottom: 6px; }
+.brand { font-weight: 600; color: var(--fg); font-size: 1.05rem; }
+nav.tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+nav.tabs a { padding: 8px 12px; border-radius: 6px; color: var(--muted); }
+nav.tabs a:hover { text-decoration: none; color: var(--fg); }
+nav.tabs a[aria-current="page"] { color: var(--fg); background: var(--card); font-weight: 600; }
+main.wrap { padding-top: 32px; padding-bottom: 48px; }
+h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 1.35rem; margin: 2rem 0 .6rem; }
+h3 { font-size: 1.1rem; margin: 1.6rem 0 .5rem; }
+p { margin: .5rem 0 .9rem; }
+.affil { color: var(--muted); margin: 0 0 4px; }
+.lede { font-size: 1.08rem; max-width: 72ch; }
+.links a { margin-right: 16px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 28px; }
+.card { display: block; padding: 16px 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: inherit; }
+.card:hover { border-color: var(--accent); text-decoration: none; }
+.card h2 { margin: 0 0 6px; font-size: 1.1rem; }
+.card p { margin: 0; color: var(--muted); }
+.placeholder { padding: 24px; border: 1px dashed var(--line); border-radius: 10px; color: var(--muted); max-width: 72ch; }
+.figwrap { margin: 16px 0 28px; }
+.fig { width: 100%; display: block; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+.fig-genome { height: 500px; }
+.fig-scaf { height: 470px; }
+@media (max-width: 720px) { .fig-genome, .fig-scaf { height: 380px; } }
+figcaption { color: var(--muted); font-size: .92rem; margin-top: 8px; max-width: 90ch; }
+.controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 12px 0; }
+select { font: inherit; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }
+ul { padding-left: 1.2rem; max-width: 90ch; }
+li { margin: .3rem 0; }
+.small { font-size: .9rem; color: var(--muted); max-width: 90ch; }
+footer.site { border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
+footer.site .wrap { padding-top: 16px; padding-bottom: 16px; }

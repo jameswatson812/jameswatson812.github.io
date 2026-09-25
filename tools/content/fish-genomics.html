@@ -1,0 +1,48 @@
+<h1>Fish genomics</h1>
+<p class="lede">Population genomics of the tidewater goby (<em>Eucyclogobius newberryi</em>), a small estuarine fish endemic to California coastal lagoons and listed under the U.S. Endangered Species Act. Its populations are subdivided among fragmented lagoon habitats, which makes it a natural system for asking how differentiation is distributed along the genome.</p>
+
+<h2 id="fst-1kb">Genome-wide F<sub>ST</sub> in 1 kb windows</h2>
+<p>Weir &amp; Cockerham's <em>&theta;</em> among the five northern coastal units (North Coast, Greater Bay Area, Central Coast, Conception, LA/Ventura; 233 fish) in non-overlapping 1 kb windows across the 22 chromosome-scale scaffolds. Windows need at least 3 SNPs to be plotted. The dashed line marks the 99.9th percentile of window F<sub>ST</sub> ({thr}); {n_outliers} windows lie above it, {n_outliers_with_genes} of them overlapping {n_outlier_genes} genes.</p>
+<figure class="figwrap">
+  <iframe class="fig fig-genome" src="fst-1kb/fst_1kb_genome.html" title="Genome-wide window F_ST, SCAF_1 to SCAF_22" loading="lazy"></iframe>
+  <figcaption>Every plotted window, scaffolds end to end in alternating colours. Hover a point for its scaffold, window start, F<sub>ST</sub> and SNP count; drag to zoom, double-click to reset. <a href="fst-1kb/png/fst_1kb_genome.png">Static PNG</a>.</figcaption>
+</figure>
+
+<h3>One scaffold at a time</h3>
+<p class="controls"><label for="scaf">Scaffold</label> <select id="scaf">{scaffold_options}</select> <a id="scaf-png" href="fst-1kb/png/fst_1kb_SCAF_1.png">Static PNG</a></p>
+<figure class="figwrap">
+  <iframe id="scaf-frame" class="fig fig-scaf" src="fst-1kb/fst_1kb_SCAF_1.html" title="Window F_ST along one scaffold" loading="lazy"></iframe>
+  <figcaption>Points are coloured by the number of SNPs in the window (capped at 20), i.e. how well supported the estimate is. Hover for the window coordinates, F<sub>ST</sub>, SNP count and overlapping genes.</figcaption>
+</figure>
+
+<h3>How to read these</h3>
+<ul>
+  <li>F<sub>ST</sub> here is a differentiation measure among the five northern units, not a diversity measure: a window near 1 is one where the units carry different alleles. The South Coast unit (<em>E. kefauveri</em>) is not included, so nothing on this page describes North versus South.</li>
+  <li>At roughly two high-quality SNPs per kb, 1 kb windows are at the edge of what the data support. Read the median window F<sub>ST</sub> ({median}) rather than the mean ({mean}), and treat the outlier set as the product rather than the window-by-window trace.</li>
+  <li>Of {n_ge1} windows with at least one SNP, {n_plotted} have three or more and are plotted.</li>
+</ul>
+
+<h3>Data</h3>
+<ul>
+  <li><a href="fst-1kb/fst_windows_1kb_outliers.tsv">Outlier windows</a> (TSV): the {n_outliers} windows above the 99.9th percentile, with overlapping genes.</li>
+  <li><a href="fst-1kb/fst_windows_1kb_north_units.tsv.gz">All windows</a> (gzipped TSV, 7.6 MB): scaffold, start, end, SNP count, F<sub>ST</sub>, outlier flag and genes for every window with at least one SNP.</li>
+</ul>
+<p class="small">Method: per-unit allele counts at high-quality biallelic SNPs, combined per window as the ratio of the summed among-unit variance component to the summed total (Weir &amp; Cockerham 1984). Figures rendered with <a href="https://plotly.com/r/">plotly</a> for R.</p>
+<script>
+(function () {
+  var sel = document.getElementById('scaf');
+  var frame = document.getElementById('scaf-frame');
+  var png = document.getElementById('scaf-png');
+  function show(k) {
+    frame.src = 'fst-1kb/fst_1kb_SCAF_' + k + '.html';
+    png.href = 'fst-1kb/png/fst_1kb_SCAF_' + k + '.png';
+    sel.value = String(k);
+    try { history.replaceState(null, '', '#SCAF_' + k); } catch (e) {}
+  }
+  sel.addEventListener('change', function () { show(sel.value); });
+  var m = /^#SCAF_(\d+)$/.exec(location.hash);
+  var k = m ? parseInt(m[1], 10) : 1;
+  if (!(k >= 1 && k <= sel.options.length)) k = 1;
+  if (k !== 1) show(k);
+})();
+</script>
