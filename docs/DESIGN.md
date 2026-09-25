@@ -18,7 +18,10 @@ publishes the interactive 1 kb sliding-window F_ST figures from the tidewater go
 - **Figures:** exported on Hoffman2 by `24_export_fst_widgets.job` from the window table that
   `goby_09_fst_windows_1kb_R.ipynb` writes, using the notebook's plotting code. Widgets are saved with
   `selfcontained = FALSE` so one `lib/` directory (~4 MB) serves all 23 panels; the genome overview uses
-  one WebGL trace per scaffold with a hovertemplate to stay small. Served under `fish-genomics/fst-1kb/`.
+  one WebGL trace per scaffold with integer coordinates (kb, F_ST per mille; axes relabelled) because
+  plotly's JSON writer prints doubles to 50 digits, and `24b_slim_widgets.py` collapses the per-point copies
+  of scalar hover attributes that plotly for R emits (23 MB -> 7.8 MB for the overview). Served under
+  `fish-genomics/fst-1kb/`.
 - **Verification:** `tools/check.py` (links resolve, titles present, size limits) before every push;
   after the push, HTTP 200 on every tab and a browser check that the widgets render and hover works.
 
