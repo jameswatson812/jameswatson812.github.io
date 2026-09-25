@@ -29,3 +29,14 @@ publishes the interactive 1 kb sliding-window F_ST figures from the tidewater go
 Email address on the home page (left off until the owner says so), per-scaffold PNGs embedded in the
 page (linked only), the notebook's own 163 MB size (a `partial_bundle()` fix in the generator is a
 separate follow-up).
+
+## Revision 2026-09-25: 101-SNP windows replace the 1 kb scan
+The 1 kb physical windows (234,379 points) were judged too dense to read. The Fish genomics tab now
+shows the Maruki-style scan from NB08 instead: non-overlapping windows of 101 consecutive SNPs with
+North-metapopulation MAF >= 0.1 (1,010 windows, one dot each), outliers by the paper's bin-wise t rule.
+Same page structure and pipeline; the export reads `eda_outputs_maruki_panels/fig5_windows_fst.tsv`
+(`25_export_fst101_widgets.job`) and the page's numbers come from its `meta.json`, including NB08's
+printed SNP counts extracted from the executed notebook. The "How to read these" section was replaced
+by "SNPs and windows used here": samples, site filters, frequency filter, window rule and totals.
+The 1 kb panels were removed from the site; they remain in git history and on the cluster under
+`eda_outputs_fst_windows_1kb/web/`.

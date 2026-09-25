@@ -1,41 +1,42 @@
 <h1>Fish genomics</h1>
 <p class="lede">Population genomics of the tidewater goby (<em>Eucyclogobius newberryi</em>), a small estuarine fish endemic to California coastal lagoons and listed under the U.S. Endangered Species Act. Its populations are subdivided among fragmented lagoon habitats, which makes it a natural system for asking how differentiation is distributed along the genome.</p>
 
-<h2 id="fst-1kb">Genome-wide F<sub>ST</sub> in 1 kb windows</h2>
-<p>Weir &amp; Cockerham's <em>&theta;</em> among the five northern coastal units (North Coast, Greater Bay Area, Central Coast, Conception, LA/Ventura; 233 fish) in non-overlapping 1 kb windows across the 22 chromosome-scale scaffolds. Windows need at least 3 SNPs to be plotted. The dashed line marks the 99.9th percentile of window F<sub>ST</sub> ({thr}); {n_outliers} windows lie above it, {n_outliers_with_genes} of them overlapping {n_outlier_genes} genes.</p>
+<h2 id="fst-scan">Genome-wide F<sub>ST</sub> scan in windows of 101 SNPs</h2>
+<p>Following Maruki, Ye &amp; Lynch (2022), Weir &amp; Cockerham's <em>&theta;</em> among the five northern coastal units is averaged over non-overlapping windows of 101 consecutive SNPs with metapopulation minor-allele frequency &ge; 0.1: {n_windows} windows, mean window F<sub>ST</sub> {mean} (SD {sd}). Outliers, in red, are windows whose F<sub>ST</sub> exceeds the empirical distribution of their own 0.05-wide F<sub>ST</sub> bin at a Bonferroni-adjusted <em>t</em> cutoff that also accounts for each window's jackknife sampling variance: {n_outliers} windows, holding {n_outlier_genes} genes. The red line is the lowest outlier F<sub>ST</sub> ({cut}).</p>
 <figure class="figwrap">
-  <iframe class="fig fig-genome" src="fst-1kb/fst_1kb_genome.html" title="Genome-wide window F_ST, SCAF_1 to SCAF_22" loading="lazy"></iframe>
-  <figcaption>Every plotted window, scaffolds end to end in alternating colours. Hover a point for its scaffold, window start, F<sub>ST</sub> and SNP count; drag to zoom, double-click to reset. <a href="fst-1kb/png/fst_1kb_genome.png">Static PNG</a>.</figcaption>
+  <iframe class="fig fig-genome" src="fst-101snp/fst101_genome.html" title="Window F_ST along SCAF_1 to SCAF_22" loading="lazy"></iframe>
+  <figcaption>Every window, scaffolds end to end in alternating colours; outliers in red. Hover a window for its coordinates, F<sub>ST</sub>, <em>t</em> and the protein-coding genes it overlaps; drag to zoom, double-click to reset. <a href="fst-101snp/png/fst101_genome.png">Static PNG</a>.</figcaption>
 </figure>
 
 <h3>One scaffold at a time</h3>
-<p class="controls"><label for="scaf">Scaffold</label> <select id="scaf">{scaffold_options}</select> <a id="scaf-png" href="fst-1kb/png/fst_1kb_SCAF_1.png">Static PNG</a></p>
+<p class="controls"><label for="scaf">Scaffold</label> <select id="scaf">{scaffold_options}</select> <a id="scaf-png" href="fst-101snp/png/fst101_SCAF_1.png">Static PNG</a></p>
 <figure class="figwrap">
-  <iframe id="scaf-frame" class="fig fig-scaf" src="fst-1kb/fst_1kb_SCAF_1.html" title="Window F_ST along one scaffold" loading="lazy"></iframe>
-  <figcaption>Points are coloured by the number of SNPs in the window (capped at 20), i.e. how well supported the estimate is. Hover for the window coordinates, F<sub>ST</sub>, SNP count and overlapping genes.</figcaption>
+  <iframe id="scaf-frame" class="fig fig-scaf" src="fst-101snp/fst101_SCAF_1.html" title="Window F_ST along one scaffold" loading="lazy"></iframe>
+  <figcaption>Black points are windows, red points are outliers, the red line is the outlier cutoff. Hover for the window coordinates, F<sub>ST</sub>, <em>t</em> and gene content.</figcaption>
 </figure>
 
-<h3>How to read these</h3>
+<h3>SNPs and windows used here</h3>
 <ul>
-  <li>F<sub>ST</sub> here is a differentiation measure among the five northern units, not a diversity measure: a window near 1 is one where the units carry different alleles. The South Coast unit (<em>E. kefauveri</em>) is not included, so nothing on this page describes North versus South.</li>
-  <li>At roughly two high-quality SNPs per kb, 1 kb windows are at the edge of what the data support. Read the median window F<sub>ST</sub> ({median}) rather than the mean ({mean}), and treat the outlier set as the product rather than the window-by-window trace.</li>
-  <li>Of {n_ge1} windows with at least one SNP, {n_plotted} have three or more and are plotted.</li>
+  <li><strong>Samples.</strong> 262 fish sequenced to a mean depth of at least 6&times;. The metapopulation is the 233 fish of the five northern units (North Coast 71, Greater Bay Area 20, Central Coast 30, Conception 80, LA/Ventura 32); the South Coast unit (29 fish, <em>E. kefauveri</em>) is excluded.</li>
+  <li><strong>Sites.</strong> Biallelic SNPs at high-quality sites: outside repeats and low-mappability regions, genotypes PASS with depth &ge; 6 and GQ &ge; 20, callable in at least 236 of the 262 fish, mean depth &le; 28&times; to exclude collapsed paralogs. {n_total} SNPs in total, {n_poly} of them polymorphic within the metapopulation.</li>
+  <li><strong>Frequency filter.</strong> Metapopulation minor-allele frequency &ge; 0.1, with genotypes in at least 4 of the 5 units: {n_snps_maf10} SNPs ({pct_maf10} of the polymorphic set).</li>
+  <li><strong>Windows.</strong> Non-overlapping blocks of 101 consecutive qualifying SNPs along each scaffold, incomplete final blocks dropped: {n_windows} windows covering {n_snps_in_windows} SNPs, median span {span_mb} Mb. Window F<sub>ST</sub> = &Sigma;a / &Sigma;(a + b + c) over its SNPs; the window sampling variance is a delete-one jackknife over the SNPs.</li>
 </ul>
 
 <h3>Data</h3>
 <ul>
-  <li><a href="fst-1kb/fst_windows_1kb_outliers.tsv">Outlier windows</a> (TSV): the {n_outliers} windows above the 99.9th percentile, with overlapping genes.</li>
-  <li><a href="fst-1kb/fst_windows_1kb_north_units.tsv.gz">All windows</a> (gzipped TSV, 7.6 MB): scaffold, start, end, SNP count, F<sub>ST</sub>, outlier flag and genes for every window with at least one SNP.</li>
+  <li><a href="fst-101snp/fst101_windows.tsv">All windows</a> (TSV): scaffold, start, end, F<sub>ST</sub>, jackknife variance, <em>t</em>, bin cutoff, outlier flag and genes for each of the {n_windows} windows.</li>
+  <li><a href="fst-101snp/fst101_outlier_windows.tsv">Outlier windows</a> (TSV).</li>
 </ul>
-<p class="small">Method: per-unit allele counts at high-quality biallelic SNPs, combined per window as the ratio of the summed among-unit variance component to the summed total (Weir &amp; Cockerham 1984). Figures rendered with <a href="https://plotly.com/r/">plotly</a> for R.</p>
+<p class="small">Window design and outlier rule after <a href="https://doi.org/10.1093/molbev/msac152">Maruki, Ye &amp; Lynch (2022), <em>Mol. Biol. Evol.</em> 39:msac152</a>. Figures rendered with <a href="https://plotly.com/r/">plotly</a> for R.</p>
 <script>
 (function () {
   var sel = document.getElementById('scaf');
   var frame = document.getElementById('scaf-frame');
   var png = document.getElementById('scaf-png');
   function show(k) {
-    frame.src = 'fst-1kb/fst_1kb_SCAF_' + k + '.html';
-    png.href = 'fst-1kb/png/fst_1kb_SCAF_' + k + '.png';
+    frame.src = 'fst-101snp/fst101_SCAF_' + k + '.html';
+    png.href = 'fst-101snp/png/fst101_SCAF_' + k + '.png';
     sel.value = String(k);
     try { history.replaceState(null, '', '#SCAF_' + k); } catch (e) {}
   }

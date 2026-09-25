@@ -1,0 +1,100 @@
+{
+  "window_snps": 101,
+  "maf_min": 0.1,
+  "n_windows": 1010,
+  "n_snps_in_windows": 102010,
+  "fst_windows": {
+    "mean": 0.669,
+    "sd": 0.103,
+    "median": 0.691
+  },
+  "n_outlier_windows": 3,
+  "cut_line": 0.911,
+  "n_outlier_genes": 16,
+  "outliers": [
+    {
+      "chrom": "SCAF_3",
+      "start": 331687,
+      "end": 1990841,
+      "fst": 0.93,
+      "t": 2.51,
+      "genes": "LOC140374363,LOC140374196,nr2f5,sv2a,LOC140373466,mlpha,LOC140374016,selenbp1,LOC140374017,iqgap3"
+    },
+    {
+      "chrom": "SCAF_14",
+      "start": 11970695,
+      "end": 12250372,
+      "fst": 0.924,
+      "t": 2.45,
+      "genes": "gli2a,LOC140359401"
+    },
+    {
+      "chrom": "SCAF_8",
+      "start": 1605034,
+      "end": 3256058,
+      "fst": 0.911,
+      "t": 2.34,
+      "genes": "kif11,LOC140350922,slc30a6,sptbn1"
+    }
+  ],
+  "window_span_bp": {
+    "median": 761926,
+    "mean": 825501
+  },
+  "per_scaffold": {
+    "SCAF_1": 58,
+    "SCAF_2": 58,
+    "SCAF_3": 48,
+    "SCAF_4": 53,
+    "SCAF_5": 49,
+    "SCAF_6": 54,
+    "SCAF_7": 32,
+    "SCAF_8": 43,
+    "SCAF_9": 38,
+    "SCAF_10": 40,
+    "SCAF_11": 56,
+    "SCAF_12": 39,
+    "SCAF_13": 53,
+    "SCAF_14": 52,
+    "SCAF_15": 48,
+    "SCAF_16": 43,
+    "SCAF_17": 44,
+    "SCAF_18": 40,
+    "SCAF_19": 40,
+    "SCAF_20": 33,
+    "SCAF_21": 48,
+    "SCAF_22": 41
+  },
+  "files_bytes": {
+    "fst101_SCAF_1.html": 17466,
+    "fst101_SCAF_2.html": 18348,
+    "fst101_SCAF_3.html": 15423,
+    "fst101_SCAF_4.html": 16573,
+    "fst101_SCAF_5.html": 14473,
+    "fst101_SCAF_6.html": 15832,
+    "fst101_SCAF_7.html": 11637,
+    "fst101_SCAF_8.html": 13052,
+    "fst101_SCAF_9.html": 11708,
+    "fst101_SCAF_10.html": 13431,
+    "fst101_SCAF_11.html": 15479,
+    "fst101_SCAF_12.html": 14068,
+    "fst101_SCAF_13.html": 16485,
+    "fst101_SCAF_14.html": 15033,
+    "fst101_SCAF_15.html": 13965,
+    "fst101_SCAF_16.html": 13436,
+    "fst101_SCAF_17.html": 14919,
+    "fst101_SCAF_18.html": 12174,
+    "fst101_SCAF_19.html": 13484,
+    "fst101_SCAF_20.html": 12127,
+    "fst101_SCAF_21.html": 14358,
+    "fst101_SCAF_22.html": 13216,
+    "fst101_genome.html": 272709
+  },
+  "source": "goby_08_maruki_panels_R.ipynb -> fig5_windows_fst.tsv (job 14746694)",
+  "generated": "2026-09-25 15:04 PDT",
+  "nb08_n_snps_total": 1739987,
+  "nb08_n_snps_maf10": 103251,
+  "nb08_n_windows": 1010,
+  "nb08_n_polymorphic_north": 1422005,
+  "nb08_n_outlier_genes": 16
+}
