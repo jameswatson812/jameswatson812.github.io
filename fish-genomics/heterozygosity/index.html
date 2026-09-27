@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Heterozygosity · Lingyu Zhan</title>
+<meta name="description" content="Per-sample heterozygosity of the tidewater goby by coastal unit and subunit, coloured by sampling era.">
+<link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+<header class="site"><div class="wrap">
+  <a class="brand" href="../../">Lingyu Zhan</a>
+  <nav class="tabs" aria-label="Site">
+    <a href="../../">Home</a>
+    <a href="../../research/">Research</a>
+    <a href="../../publications/">Publications</a>
+    <a href="../../fish-genomics/" aria-current="page">Fish genomics</a>
+    <a href="../../human-genomics/">Human genomics</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<h1>Fish genomics</h1>
+<nav class="subtabs" aria-label="Fish genomics sections"><a href="../../fish-genomics/">F<sub>ST</sub> scans</a><a href="../../fish-genomics/heterozygosity/" aria-current="page">Heterozygosity</a></nav>
+<h2 id="het">Per-sample heterozygosity by coastal unit and subunit</h2>
+<p class="lede">Heterozygosity at silent sites for each of the 262 fish of the full-QC arm, one point per fish, coloured by sampling era: 74 fish sampled before 2005 in orange, 188 from 2005 onwards in blue. Units and subunits run north to south. Hover a point for the fish's sample code, sampling year, site, heterozygous-site count and callable sites.</p>
+<figure class="figwrap">
+  <iframe class="fig fig-het" src="het/het_by_unit.html" title="Per-sample heterozygosity by coastal unit" loading="lazy"></iframe>
+  <figcaption>By coastal unit. Boxes are the unit's quartiles without outliers; points are jittered within the unit. <a href="het/het_by_unit.png">Static PNG</a>.</figcaption>
+</figure>
+<figure class="figwrap">
+  <iframe class="fig fig-hetsub" src="het/het_by_subunit.html" title="Per-sample heterozygosity by subunit" loading="lazy"></iframe>
+  <figcaption>By subunit (23 subunits with fish in the arm), grouped under their units; the crossbar is the subunit median. <a href="het/het_by_subunit.png">Static PNG</a>.</figcaption>
+</figure>
+<div class="tablewrap"><table class="summary">
+  <thead><tr><th>Unit</th><th>Fish</th><th>Before 2005</th><th>2005 onwards</th><th>Median heterozygosity</th></tr></thead>
+  <tbody>
+    <tr><td>North Coast</td><td>71</td><td>9</td><td>62</td><td>1.12e-4</td></tr>
+    <tr><td>GBA</td><td>20</td><td>9</td><td>11</td><td>2.36e-4</td></tr>
+    <tr><td>Central Coast</td><td>30</td><td>11</td><td>19</td><td>3.90e-4</td></tr>
+    <tr><td>Conception</td><td>80</td><td>18</td><td>62</td><td>1.97e-4</td></tr>
+    <tr><td>LA_Ventura</td><td>32</td><td>8</td><td>24</td><td>2.61e-4</td></tr>
+    <tr><td>South Coast</td><td>29</td><td>19</td><td>10</td><td>2.14e-4</td></tr>
+  </tbody>
+</table></div>
+<h3>How it was computed</h3>
+<ul>
+  <li><strong>Fish.</strong> The full-QC arm: 262 fish with mean depth of at least 6&times;, genotypes PASS with depth &ge; 6 and GQ &ge; 20.</li>
+  <li><strong>Sites.</strong> Silent (synonymous) sites of the high-quality set: outside repeats and low-mappability regions, callable in at least 236 of the 262 fish, mean depth &le; 28&times;. Silent sites are the near-neutral reference class of this project.</li>
+  <li><strong>Rate.</strong> Heterozygous genotypes divided by the fish's callable silent sites.</li>
+  <li><strong>Era.</strong> The sampling year from the specimen manifest, split at 2005.</li>
+</ul>
+<h3>Data</h3>
+<ul>
+  <li><a href="het/het_silent_by_unit.tsv">Per-fish heterozygosity by unit</a> and <a href="het/het_silent_by_subunit.tsv">by subunit</a> (TSV): sample code, year, era, unit, subunit, site, heterozygous sites, callable sites, rate.</li>
+</ul>
+<p class="small">From <code>goby_05_functional_categories_full_R.ipynb</code>, section 3. Figures rendered with <a href="https://plotly.com/r/">plotly</a> for R.</p>
+</main>
+<footer class="site"><div class="wrap">&copy; 2026 Lingyu Zhan &middot; <a href="https://github.com/jameswatson812/jameswatson812.github.io">Site source</a></div></footer>
+</body>
+</html>

@@ -1,0 +1,250 @@
+{
+  "site_class": "silent",
+  "n_fish": 262,
+  "n_pre2005": 74,
+  "n_from2005": 188,
+  "n_units": 6,
+  "n_subunits": 23,
+  "per_unit": [
+    {
+      "unit": "North Coast",
+      "n": 71,
+      "n_pre2005": 9,
+      "n_from2005": 62,
+      "median_het": 0.0001121,
+      "mean_het": 0.0001193
+    },
+    {
+      "unit": "GBA",
+      "n": 20,
+      "n_pre2005": 9,
+      "n_from2005": 11,
+      "median_het": 0.0002364,
+      "mean_het": 0.0002453
+    },
+    {
+      "unit": "Central Coast",
+      "n": 30,
+      "n_pre2005": 11,
+      "n_from2005": 19,
+      "median_het": 0.0003896,
+      "mean_het": 0.0004026
+    },
+    {
+      "unit": "Conception",
+      "n": 80,
+      "n_pre2005": 18,
+      "n_from2005": 62,
+      "median_het": 0.0001971,
+      "mean_het": 0.0001978
+    },
+    {
+      "unit": "LA_Ventura",
+      "n": 32,
+      "n_pre2005": 8,
+      "n_from2005": 24,
+      "median_het": 0.0002613,
+      "mean_het": 0.0002586
+    },
+    {
+      "unit": "South Coast",
+      "n": 29,
+      "n_pre2005": 19,
+      "n_from2005": 10,
+      "median_het": 0.0002136,
+      "mean_het": 0.000199
+    }
+  ],
+  "per_subunit": [
+    {
+      "subunit": "NC01",
+      "unit": "North Coast",
+      "n": 14,
+      "n_pre2005": 2,
+      "n_from2005": 12,
+      "median_het": 0.0001058
+    },
+    {
+      "subunit": "NC02",
+      "unit": "North Coast",
+      "n": 26,
+      "n_pre2005": 2,
+      "n_from2005": 24,
+      "median_het": 0.0001097
+    },
+    {
+      "subunit": "NC03",
+      "unit": "North Coast",
+      "n": 2,
+      "n_pre2005": 0,
+      "n_from2005": 2,
+      "median_het": 0.0001122
+    },
+    {
+      "subunit": "NC04",
+      "unit": "North Coast",
+      "n": 1,
+      "n_pre2005": 1,
+      "n_from2005": 0,
+      "median_het": 0.0001956
+    },
+    {
+      "subunit": "NC05",
+      "unit": "North Coast",
+      "n": 26,
+      "n_pre2005": 2,
+      "n_from2005": 24,
+      "median_het": 0.0001132
+    },
+    {
+      "subunit": "NC06",
+      "unit": "North Coast",
+      "n": 2,
+      "n_pre2005": 2,
+      "n_from2005": 0,
+      "median_het": 0.0002246
+    },
+    {
+      "subunit": "GBA01",
+      "unit": "GBA",
+      "n": 4,
+      "n_pre2005": 2,
+      "n_from2005": 2,
+      "median_het": 0.0002081
+    },
+    {
+      "subunit": "GBA02",
+      "unit": "GBA",
+      "n": 2,
+      "n_pre2005": 2,
+      "n_from2005": 0,
+      "median_het": 0.0002717
+    },
+    {
+      "subunit": "GBA03",
+      "unit": "GBA",
+      "n": 2,
+      "n_pre2005": 0,
+      "n_from2005": 2,
+      "median_het": 0.0002456
+    },
+    {
+      "subunit": "GBA04",
+      "unit": "GBA",
+      "n": 1,
+      "n_pre2005": 1,
+      "n_from2005": 0,
+      "median_het": 0.0003456
+    },
+    {
+      "subunit": "GBA05",
+      "unit": "GBA",
+      "n": 4,
+      "n_pre2005": 1,
+      "n_from2005": 3,
+      "median_het": 0.0002424
+    },
+    {
+      "subunit": "GBA06",
+      "unit": "GBA",
+      "n": 3,
+      "n_pre2005": 0,
+      "n_from2005": 3,
+      "median_het": 0.000214
+    },
+    {
+      "subunit": "GBA09",
+      "unit": "GBA",
+      "n": 1,
+      "n_pre2005": 0,
+      "n_from2005": 1,
+      "median_het": 0.0003975
+    },
+    {
+      "subunit": "GBA07",
+      "unit": "GBA",
+      "n": 1,
+      "n_pre2005": 1,
+      "n_from2005": 0,
+      "median_het": 0.0002541
+    },
+    {
+      "subunit": "GBA08",
+      "unit": "GBA",
+      "n": 2,
+      "n_pre2005": 2,
+      "n_from2005": 0,
+      "median_het": 0.0002624
+    },
+    {
+      "subunit": "CC02",
+      "unit": "Central Coast",
+      "n": 13,
+      "n_pre2005": 6,
+      "n_from2005": 7,
+      "median_het": 0.0004216
+    },
+    {
+      "subunit": "CC03",
+      "unit": "Central Coast",
+      "n": 17,
+      "n_pre2005": 5,
+      "n_from2005": 12,
+      "median_het": 0.0003834
+    },
+    {
+      "subunit": "CO01",
+      "unit": "Conception",
+      "n": 10,
+      "n_pre2005": 4,
+      "n_from2005": 6,
+      "median_het": 0.0001919
+    },
+    {
+      "subunit": "CO02",
+      "unit": "Conception",
+      "n": 20,
+      "n_pre2005": 4,
+      "n_from2005": 16,
+      "median_het": 0.0001549
+    },
+    {
+      "subunit": "CO03",
+      "unit": "Conception",
+      "n": 50,
+      "n_pre2005": 10,
+      "n_from2005": 40,
+      "median_het": 0.0002118
+    },
+    {
+      "subunit": "LA01",
+      "unit": "LA_Ventura",
+      "n": 32,
+      "n_pre2005": 8,
+      "n_from2005": 24,
+      "median_het": 0.0002613
+    },
+    {
+      "subunit": "SC01",
+      "unit": "South Coast",
+      "n": 14,
+      "n_pre2005": 10,
+      "n_from2005": 4,
+      "median_het": 0.000127
+    },
+    {
+      "subunit": "SC02",
+      "unit": "South Coast",
+      "n": 15,
+      "n_pre2005": 9,
+      "n_from2005": 6,
+      "median_het": 0.0002521
+    }
+  ],
+  "files_bytes": {
+    "het_by_unit.html": 56420,
+    "het_by_subunit.html": 58895
+  },
+  "source": "goby_05_functional_categories_full_R.ipynb section 3 (cat_het_unit.tsv, cat_het_subunit.tsv, sample_display_303.tsv)",
+  "generated": "2026-09-26 21:58 PDT"
+}

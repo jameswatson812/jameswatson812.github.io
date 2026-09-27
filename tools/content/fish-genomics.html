@@ -1,4 +1,5 @@
 <h1>Fish genomics</h1>
+{fish_subnav}
 <p class="lede">Population genomics of the tidewater goby (<em>Eucyclogobius newberryi</em>), a small estuarine fish endemic to California coastal lagoons and listed under the U.S. Endangered Species Act. Its populations are subdivided among fragmented lagoon habitats, which makes it a natural system for asking how differentiation is distributed along the genome.</p>
 
 <h2 id="fst-scan">Genome-wide F<sub>ST</sub> scan in windows of 101 SNPs</h2>
@@ -16,23 +17,36 @@
 </figure>
 
 <h2 id="pairwise">Pairwise scans between coastal units</h2>
-<p>The same window design applied to each of the {pw_n_pairs} pairs of the six coastal units, South Coast included (a between-species comparison, <em>E. kefauveri</em> against <em>E. newberryi</em>). For each pair the SNPs are those with at least 5 fish genotyped in both units and a minor-allele frequency &ge; 0.1 in the pair's pooled allele counts, so every pair has its own SNP set and window boundaries; outliers are called within each pair by the same bin-wise rule. The matrix gives the genome-wide F<sub>ST</sub> between units as the ratio of summed variance components over those SNPs.</p>
+<p>The same window design applied to each of the {pw_n_pairs} pairs of the six coastal units, South Coast included (a between-species comparison, <em>E. kefauveri</em> against <em>E. newberryi</em>). For each pair the SNPs are those with at least 5 fish genotyped in both units and a minor-allele frequency &ge; 0.1 in the pair's pooled allele counts, so every pair has its own SNP set and window boundaries; outliers are called within each pair by the same bin-wise rule. The scan is available for three site classes: all high-quality SNP classes together (the design above), replacement SNPs only, and silent SNPs only. The restricted classes hold far fewer qualifying SNPs, so their windows are few and span tens of megabases; read them as class-specific genome-wide contrasts. The matrix gives the genome-wide F<sub>ST</sub> between units as the ratio of summed variance components over the selected class.</p>
+<p class="controls"><label for="pw-class">Site class</label> <select id="pw-class">{pw_class_options}</select></p>
 <figure class="figwrap">
-  <iframe class="fig fig-matrix" src="fst-101snp-pairs/pw_matrix.html" title="Genome-wide pairwise F_ST between coastal units" loading="lazy"></iframe>
-  <figcaption>Genome-wide F<sub>ST</sub> between units over the SNPs the windows use. Hover a cell for the SNP and window counts and the value without the frequency filter. <a href="fst-101snp-pairs/png/pairwise_fst_matrix.png">Static PNG</a>.</figcaption>
+  <iframe id="pw-matrix-frame" class="fig fig-matrix" src="fst-101snp-pairs/pw_matrix.html" title="Genome-wide pairwise F_ST between coastal units" loading="lazy"></iframe>
+  <figcaption>Genome-wide F<sub>ST</sub> between units over the SNPs the windows use. Hover a cell for the SNP and window counts and the value without the frequency filter. <a id="pw-matrix-png" href="fst-101snp-pairs/png/pairwise_fst_matrix.png">Static PNG</a>.</figcaption>
 </figure>
-<div class="tablewrap"><table class="summary">
+<div class="tablewrap" id="pw-table-all"><table class="summary">
   <thead><tr><th>Pair</th><th>Fish</th><th>SNPs (MAF &ge; 0.1)</th><th>Windows</th><th>F<sub>ST</sub></th><th>Mean window F<sub>ST</sub> (SD)</th><th>Outlier windows</th></tr></thead>
   <tbody>
-{pw_summary_rows}
+{pw_summary_rows_all}
+  </tbody>
+</table></div>
+<div class="tablewrap" id="pw-table-replacement" hidden><table class="summary">
+  <thead><tr><th>Pair</th><th>Fish</th><th>Replacement SNPs (MAF &ge; 0.1)</th><th>Windows</th><th>F<sub>ST</sub></th><th>Mean window F<sub>ST</sub> (SD)</th><th>Outlier windows</th></tr></thead>
+  <tbody>
+{pw_summary_rows_replacement}
+  </tbody>
+</table></div>
+<div class="tablewrap" id="pw-table-silent" hidden><table class="summary">
+  <thead><tr><th>Pair</th><th>Fish</th><th>Silent SNPs (MAF &ge; 0.1)</th><th>Windows</th><th>F<sub>ST</sub></th><th>Mean window F<sub>ST</sub> (SD)</th><th>Outlier windows</th></tr></thead>
+  <tbody>
+{pw_summary_rows_silent}
   </tbody>
 </table></div>
 <p class="controls"><label for="pw-pair">Pair</label> <select id="pw-pair">{pw_pair_options}</select> <a id="pw-genome-png" href="fst-101snp-pairs/png/pair_scan_NC-GBA.png">Static PNG</a></p>
 <figure class="figwrap">
   <iframe id="pw-genome-frame" class="fig fig-genome" src="fst-101snp-pairs/pw_NC-GBA_genome.html" title="Pairwise window F_ST along SCAF_1 to SCAF_22" loading="lazy"></iframe>
-  <figcaption>All windows of the selected pair, scaffolds end to end in alternating colours; outliers in red, the red line at the pair's lowest outlier F<sub>ST</sub>. Hover for coordinates, F<sub>ST</sub>, <em>t</em> and genes.</figcaption>
+  <figcaption>All windows of the selected pair and site class, scaffolds end to end in alternating colours; outliers in red, the red line at the pair's lowest outlier F<sub>ST</sub>. Hover for coordinates, F<sub>ST</sub>, <em>t</em> and genes.</figcaption>
 </figure>
-<p class="controls"><label for="pw-scaf">Scaffold</label> <select id="pw-scaf"></select></p>
+<p class="controls"><label for="pw-scaf">Scaffold</label> <select id="pw-scaf"></select> <span id="pw-scaf-note" class="small"></span></p>
 <figure class="figwrap">
   <iframe id="pw-scaf-frame" class="fig fig-scaf" src="fst-101snp-pairs/pw_NC-GBA_SCAF_1.html" title="Pairwise window F_ST along one scaffold" loading="lazy"></iframe>
   <figcaption>One scaffold of the selected pair: black points are windows, red points are outliers.</figcaption>
@@ -40,31 +54,36 @@
 <script>
 (function () {
   var per = {pw_per_scaffold_json};
-  var pair = document.getElementById('pw-pair'), scaf = document.getElementById('pw-scaf');
-  var gframe = document.getElementById('pw-genome-frame'), sframe = document.getElementById('pw-scaf-frame');
-  var gpng = document.getElementById('pw-genome-png');
-  function fillScafs(p, keep) {
-    var counts = per[p] || {}; scaf.innerHTML = '';
+  var folder = {all: 'fst-101snp-pairs', replacement: 'fst-101snp-pairs-replacement', silent: 'fst-101snp-pairs-silent'};
+  var cls = document.getElementById('pw-class'), pair = document.getElementById('pw-pair'), scaf = document.getElementById('pw-scaf');
+  var gframe = document.getElementById('pw-genome-frame'), sframe = document.getElementById('pw-scaf-frame'), mframe = document.getElementById('pw-matrix-frame');
+  var gpng = document.getElementById('pw-genome-png'), mpng = document.getElementById('pw-matrix-png'), note = document.getElementById('pw-scaf-note');
+  function setSrc(frame, url) { if (frame.getAttribute('src') !== url) frame.src = url; }
+  function fillScafs(c, p, keep) {
+    var counts = (per[c] || {})[p] || {}; scaf.innerHTML = '';
     for (var k = 1; k <= 22; k++) {
       var n = counts['SCAF_' + k]; if (!n) continue;
       var o = document.createElement('option'); o.value = String(k); o.textContent = 'SCAF_' + k + ' (' + n + ' windows)';
       scaf.appendChild(o);
     }
     if (keep && counts['SCAF_' + keep]) scaf.value = String(keep);
+    note.textContent = scaf.options.length ? '' : 'no scaffold holds a complete window for this pair and class';
   }
-  function setSrc(frame, url) { if (frame.getAttribute('src') !== url) frame.src = url; }
-  function show(p, k) {
-    fillScafs(p, k); k = scaf.value || '1';
-    setSrc(gframe, 'fst-101snp-pairs/pw_' + p + '_genome.html');
-    gpng.href = 'fst-101snp-pairs/png/pair_scan_' + p + '.png';
-    setSrc(sframe, 'fst-101snp-pairs/pw_' + p + '_SCAF_' + k + '.html');
-    pair.value = p;
-    try { history.replaceState(null, '', '#pw-' + p + '-SCAF_' + k); } catch (e) {}
+  function show(c, p, k) {
+    var f = folder[c] || folder.all;
+    ['all', 'replacement', 'silent'].forEach(function (x) { document.getElementById('pw-table-' + x).hidden = (x !== c); });
+    setSrc(mframe, f + '/pw_matrix.html'); mpng.href = f + '/png/pairwise_fst_matrix.png';
+    fillScafs(c, p, k); k = scaf.value || '';
+    setSrc(gframe, f + '/pw_' + p + '_genome.html'); gpng.href = f + '/png/pair_scan_' + p + '.png';
+    if (k) { setSrc(sframe, f + '/pw_' + p + '_SCAF_' + k + '.html'); sframe.hidden = false; } else { sframe.hidden = true; }
+    cls.value = c; pair.value = p;
+    try { history.replaceState(null, '', '#pw-' + (c === 'all' ? '' : c + '-') + p + (k ? '-SCAF_' + k : '')); } catch (e) {}
   }
-  pair.addEventListener('change', function () { show(pair.value, 1); });
-  scaf.addEventListener('change', function () { show(pair.value, scaf.value); });
-  var m = /^#pw-([A-Z]+-[A-Z]+)-SCAF_(\d+)$/.exec(location.hash);
-  if (m && per[m[1]]) show(m[1], m[2]); else fillScafs(pair.value, 1);
+  cls.addEventListener('change', function () { show(cls.value, pair.value, 1); });
+  pair.addEventListener('change', function () { show(cls.value, pair.value, 1); });
+  scaf.addEventListener('change', function () { show(cls.value, pair.value, scaf.value); });
+  var m = /^#pw-(?:(replacement|silent)-)?([A-Z]+-[A-Z]+)(?:-SCAF_(\d+))?$/.exec(location.hash);
+  if (m && per[m[1] || 'all'] && per[m[1] || 'all'][m[2]]) show(m[1] || 'all', m[2], m[3] || 1); else fillScafs('all', pair.value, 1);
 })();
 </script>
 
@@ -74,14 +93,14 @@
   <li><strong>Sites.</strong> Biallelic SNPs at high-quality sites: outside repeats and low-mappability regions, genotypes PASS with depth &ge; 6 and GQ &ge; 20, callable in at least 236 of the 262 fish, mean depth &le; 28&times; to exclude collapsed paralogs. {n_total} SNPs in total, {n_poly} of them polymorphic within the metapopulation.</li>
   <li><strong>Frequency filter.</strong> Metapopulation minor-allele frequency &ge; 0.1, with genotypes in at least 4 of the 5 units: {n_snps_maf10} SNPs ({pct_maf10} of the polymorphic set).</li>
   <li><strong>Windows.</strong> Non-overlapping blocks of 101 consecutive qualifying SNPs along each scaffold, incomplete final blocks dropped: {n_windows} windows covering {n_snps_in_windows} SNPs, median span {span_mb} Mb. Window F<sub>ST</sub> = &Sigma;a / &Sigma;(a + b + c) over its SNPs; the window sampling variance is a delete-one jackknife over the SNPs.</li>
-  <li><strong>Pairwise scans.</strong> The same window rule for each of the {pw_n_pairs} pairs of units, with the frequency filter computed on the pair's pooled allele counts and both units required to have at least 5 fish genotyped; SNP and window counts per pair are in the table above, {pw_n_windows_total} windows in all.</li>
+  <li><strong>Pairwise scans.</strong> The same window rule for each of the {pw_n_pairs} pairs of units, with the frequency filter computed on the pair's pooled allele counts and both units required to have at least 5 fish genotyped; run on all SNP classes, on replacement SNPs only and on silent SNPs only. SNP and window counts per pair and class are in the tables above.</li>
 </ul>
 
 <h3>Data</h3>
 <ul>
   <li><a href="fst-101snp/fst101_windows.tsv">All windows</a> (TSV): scaffold, start, end, F<sub>ST</sub>, jackknife variance, <em>t</em>, bin cutoff, outlier flag and genes for each of the {n_windows} windows.</li>
   <li><a href="fst-101snp/fst101_outlier_windows.tsv">Outlier windows</a> (TSV).</li>
-  <li><a href="fst-101snp-pairs/pairwise_windows_all.tsv.gz">All pairwise windows</a> (gzipped TSV): every window of every pair with F<sub>ST</sub>, <em>t</em>, outlier flag and genes; <a href="fst-101snp-pairs/pairwise_summary.tsv">per-pair summary</a>, <a href="fst-101snp-pairs/pairwise_outlier_windows.tsv">pairwise outlier windows</a> and the <a href="fst-101snp-pairs/pairwise_fst_matrix.tsv">F<sub>ST</sub> matrix</a> (TSV).</li>
+  <li>Pairwise windows, per-pair summary, outlier windows and the F<sub>ST</sub> matrix (TSV) for each site class: all SNP classes (<a href="fst-101snp-pairs/pairwise_windows_all.tsv.gz">windows</a>, <a href="fst-101snp-pairs/pairwise_summary.tsv">summary</a>, <a href="fst-101snp-pairs/pairwise_outlier_windows.tsv">outliers</a>, <a href="fst-101snp-pairs/pairwise_fst_matrix.tsv">matrix</a>), <a href="fst-101snp-pairs-replacement/pairwise_windows_all.tsv.gz">replacement</a> (<a href="fst-101snp-pairs-replacement/pairwise_summary.tsv">summary</a>, <a href="fst-101snp-pairs-replacement/pairwise_outlier_windows.tsv">outliers</a>, <a href="fst-101snp-pairs-replacement/pairwise_fst_matrix.tsv">matrix</a>), <a href="fst-101snp-pairs-silent/pairwise_windows_all.tsv.gz">silent</a> (<a href="fst-101snp-pairs-silent/pairwise_summary.tsv">summary</a>, <a href="fst-101snp-pairs-silent/pairwise_outlier_windows.tsv">outliers</a>, <a href="fst-101snp-pairs-silent/pairwise_fst_matrix.tsv">matrix</a>).</li>
 </ul>
 <p class="small">Window design and outlier rule after <a href="https://doi.org/10.1093/molbev/msac152">Maruki, Ye &amp; Lynch (2022), <em>Mol. Biol. Evol.</em> 39:msac152</a>. Figures rendered with <a href="https://plotly.com/r/">plotly</a> for R.</p>
 <script>

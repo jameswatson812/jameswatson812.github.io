@@ -15,7 +15,6 @@ import pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CONTENT = ROOT / "tools" / "content"
 META = ROOT / "fish-genomics" / "fst-101snp" / "meta.json"
-META_PW = ROOT / "fish-genomics" / "fst-101snp-pairs" / "meta.json"
 SITE_NAME = "Lingyu Zhan"
 NAV = [("Home", ""), ("Research", "research/"), ("Publications", "publications/"),
        ("Fish genomics", "fish-genomics/"), ("Human genomics", "human-genomics/")]
@@ -26,8 +25,15 @@ PAGES = [
     ("publications/index.html", "Publications", "Publications", "Selected publications.", "publications.html", 1),
     ("fish-genomics/index.html", "Fish genomics", "Fish genomics",
      "Population genomics of the tidewater goby: interactive genome-wide and pairwise F_ST scans in 101-SNP windows.", "fish-genomics.html", 1),
+    ("fish-genomics/heterozygosity/index.html", "Fish genomics", "Heterozygosity",
+     "Per-sample heterozygosity of the tidewater goby by coastal unit and subunit, coloured by sampling era.", "fish-het.html", 2),
     ("human-genomics/index.html", "Human genomics", "Human genomics", "Human genomics projects.", "human-genomics.html", 1),
 ]
+# sub-tabs shown on every Fish genomics page (output path prefix -> label)
+FISH_SUBNAV = [("F<sub>ST</sub> scans", "fish-genomics/"), ("Heterozygosity", "fish-genomics/heterozygosity/")]
+META_HET = ROOT / "fish-genomics" / "het" / "meta.json"
+PW_CLASSES = [("all", "fst-101snp-pairs", "All SNP classes"), ("replacement", "fst-101snp-pairs-replacement", "Replacement SNPs"),
+              ("silent", "fst-101snp-pairs-silent", "Silent SNPs")]
 # the NB08 readout (goby_08_maruki_panels_R.ipynb, job 14746694), used only when meta.json lacks a field
 FALLBACK = {"n_windows": 1010, "n_snps_in_windows": 102010, "nb08_n_snps_total": 1739987,
             "nb08_n_snps_maf10": 103251, "nb08_n_polymorphic_north": 1422005,
@@ -100,23 +106,59 @@ def page_numbers():
 
 
 def pairwise_tokens():
-    """Tokens for the pairwise section from fst-101snp-pairs/meta.json (empty menus when absent)."""
-    if not META_PW.exists():
-        print(f"WARN: {META_PW.relative_to(ROOT)} absent, pairwise section built without data")
-        return {"pw_n_pairs": "15", "pw_n_windows_total": "?", "pw_pair_options": "", "pw_summary_rows": "",
-                "pw_per_scaffold_json": "{}"}
-    m = json.loads(META_PW.read_text())
-    opts, rows, per = [], [], {}
-    for p in m["pairs"]:
-        opts.append(f'<option value="{p["pair"]}">{p["label"]}</option>')
-        cut = f'{p["n_outliers"]:,}' + (f' (cutoff {p["cut_line"]:.3f})' if p.get("cut_line") is not None else "")
-        rows.append("    <tr><td>{label}</td><td>{fish}</td><td>{snps}</td><td>{win}</td><td>{fst}</td><td>{wm}</td><td>{out}</td></tr>".format(
-            label=p["label"], fish=f'{p["n_a"]} + {p["n_b"]}', snps=f'{p["n_snps_maf10"]:,}', win=f'{p["n_windows"]:,}',
-            fst=f'{p["fst_maf10"]:.3f}', wm=f'{p["win_mean"]:.3f} ({p["win_sd"]:.3f})', out=cut))
-        per[p["pair"]] = {k: v for k, v in p["per_scaffold"].items() if v}
-    return {"pw_n_pairs": str(m["n_pairs"]), "pw_n_windows_total": f'{m["n_windows_total"]:,}',
-            "pw_pair_options": "".join(opts), "pw_summary_rows": "\n".join(rows),
-            "pw_per_scaffold_json": json.dumps(per, separators=(",", ":"))}
+    """Tokens for the pairwise section: one summary table and scaffold-count map per site class."""
+    tokens = {"pw_n_pairs": "15", "pw_class_options": "".join(
+        f'<option value="{cls}">{label}</option>' for cls, _, label in PW_CLASSES)}
+    per_all, opts = {}, None
+    for cls, folder, label in PW_CLASSES:
+        meta = ROOT / "fish-genomics" / folder / "meta.json"
+        rows = []
+        if not meta.exists():
+            print(f"WARN: {meta.relative_to(ROOT)} absent, {cls} pairwise table built empty")
+            per_all[cls] = {}
+        else:
+            m = json.loads(meta.read_text())
+            tokens["pw_n_pairs"] = str(m["n_pairs"])
+            if opts is None:
+                opts = "".join(f'<option value="{p["pair"]}">{p["label"]}</option>' for p in m["pairs"])
+            per_all[cls] = {p["pair"]: {k: v for k, v in p["per_scaffold"].items() if v} for p in m["pairs"]}
+            for p in m["pairs"]:
+                if p["n_windows"]:
+                    wm = f'{p["win_mean"]:.3f} ({p["win_sd"]:.3f})' if p.get("win_sd") is not None else f'{p["win_mean"]:.3f}'
+                    out = f'{p["n_outliers"]:,}' + (f' (cutoff {p["cut_line"]:.3f})' if p.get("cut_line") is not None else "")
+                else:
+                    wm, out = "no complete window", "0"
+                rows.append("    <tr><td>{label}</td><td>{fish}</td><td>{snps}</td><td>{win}</td><td>{fst}</td><td>{wm}</td><td>{out}</td></tr>".format(
+                    label=p["label"], fish=f'{p["n_a"]} + {p["n_b"]}', snps=f'{p["n_snps_maf10"]:,}', win=f'{p["n_windows"]:,}',
+                    fst=f'{p["fst_maf10"]:.3f}' if p.get("fst_maf10") is not None else "n/a", wm=wm, out=out))
+        tokens[f"pw_summary_rows_{cls}"] = "\n".join(rows)
+    tokens["pw_pair_options"] = opts or ""
+    tokens["pw_per_scaffold_json"] = json.dumps(per_all, separators=(",", ":"))
+    return tokens
+
+
+def het_tokens():
+    """Tokens for the Heterozygosity page from fish-genomics/het/meta.json."""
+    if not META_HET.exists():
+        print(f"WARN: {META_HET.relative_to(ROOT)} absent, heterozygosity page built without numbers")
+        return {"het_n_fish": "?", "het_n_pre": "?", "het_n_post": "?", "het_n_subunits": "?", "het_unit_rows": ""}
+    m = json.loads(META_HET.read_text())
+    rows = ["    <tr><td>{unit}</td><td>{n}</td><td>{pre}</td><td>{post}</td><td>{med}</td></tr>".format(
+        unit=u["unit"], n=u["n"], pre=u["n_pre2005"], post=u["n_from2005"], med=f'{u["median_het"]:.2e}'.replace("e-0", "e-"))
+        for u in m["per_unit"]]
+    return {"het_n_fish": f'{m["n_fish"]:,}', "het_n_pre": f'{m["n_pre2005"]:,}', "het_n_post": f'{m["n_from2005"]:,}',
+            "het_n_subunits": str(m["n_subunits"]), "het_unit_rows": "\n".join(rows)}
+
+
+def fish_subnav(out):
+    """The sub-tab bar for Fish genomics pages; the tab whose folder is the page's own is current."""
+    depth = out.count("/")
+    root = "./" if depth == 0 else "../" * depth
+    links = []
+    for label, folder in FISH_SUBNAV:
+        cur = ' aria-current="page"' if out.startswith(folder) and out[len(folder):].count("/") == 0 else ""
+        links.append(f'<a href="{root}{folder}"{cur}>{label}</a>')
+    return '<nav class="subtabs" aria-label="Fish genomics sections">' + "".join(links) + "</nav>"
 
 
 def scaffold_options():
@@ -138,7 +180,8 @@ def render(out, key, title, description, content, depth):
     nav = "\n".join(links)
     body = (CONTENT / content).read_text()
     body = body.replace("{root}", root).replace("{scaffold_options}", scaffold_options())
-    for token, value in {**page_numbers(), **pairwise_tokens()}.items():
+    body = body.replace("{fish_subnav}", fish_subnav(out))
+    for token, value in {**page_numbers(), **pairwise_tokens(), **het_tokens()}.items():
         body = body.replace("{" + token + "}", value)
     page_title = title if title == SITE_NAME else f"{title} · {SITE_NAME}"
     html = TEMPLATE.format(title=page_title, description=description, root=root, site_name=SITE_NAME,

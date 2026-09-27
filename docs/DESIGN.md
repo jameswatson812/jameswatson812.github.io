@@ -50,3 +50,13 @@ pooled MAF >= 0.1, in non-overlapping 101-SNP windows, with the bin-wise outlier
 a genome-wide F_ST matrix; the page gets a "Pairwise scans" section with pair and scaffold menus, a
 summary table filled from `meta.json`, and the downloads. Only genome-wide PNGs are kept as fallbacks
 (one per pair); per-scaffold PNGs would be 330 files for little gain.
+
+## Revision 2026-09-26 (b): sub-tabs, heterozygosity, site classes
+- Fish genomics pages now carry a sub-tab bar: "F_ST scans" (`fish-genomics/`) and "Heterozygosity"
+  (`fish-genomics/heterozygosity/`), rendered by `fish_subnav()` in `tools/build.py`.
+- Heterozygosity: the two per-fish silent-site figures of NB05-full section 3 (by unit, by subunit,
+  coloured by sampling era) exported by `27_export_het_widgets.job` into `fish-genomics/het/`.
+- Pairwise scans: NB10 now runs three site classes (all, replacement, silent), each exported by
+  `25b_export_pairwise_widgets.job` into `fish-genomics/fst-101snp-pairs[-replacement|-silent]/`; the
+  page's pairwise section has a site-class switch that swaps the matrix, the summary table and the panels.
+  A pair without a complete window gets a placeholder overview so every URL the page can build exists.

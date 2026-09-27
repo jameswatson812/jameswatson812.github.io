@@ -31,9 +31,10 @@ def main():
     args = ap.parse_args()
     errors, warnings = [], []
     htmls = [p for p in site_files() if p.suffix == ".html"]
-    # site pages carry the shared header; widget files under fish-genomics/fst-*/ are figures, link-checked only
+    # site pages carry the shared header; figure widgets are the HTML files that sit next to a meta.json
+    # (every export folder writes one) or under a lib/ directory; they are link-checked only
     def is_widget(p):
-        return any(part.startswith("fst-") for part in p.relative_to(ROOT).parts)
+        return (p.parent / "meta.json").exists() or "lib" in p.relative_to(ROOT).parts
     pages = [p for p in htmls if not is_widget(p)]
     if not (ROOT / ".nojekyll").exists():
         errors.append(".nojekyll missing (GitHub would run Jekyll over the site)")

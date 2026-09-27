@@ -45,6 +45,8 @@ p { margin: .5rem 0 .9rem; }
 .fig-genome { height: 500px; }
 .fig-scaf { height: 470px; }
 .fig-matrix { height: 600px; max-width: 760px; }
+.fig-het { height: 540px; }
+.fig-hetsub { height: 620px; }
 @media (max-width: 720px) { .fig-genome, .fig-scaf { height: 380px; } }
 figcaption { color: var(--muted); font-size: .92rem; margin-top: 8px; max-width: 90ch; }
 .controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 12px 0; }
@@ -59,3 +61,8 @@ table.summary { border-collapse: collapse; font-size: .9rem; min-width: 640px; }
 table.summary th, table.summary td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
 table.summary th:first-child, table.summary td:first-child { text-align: left; }
 table.summary thead th { border-bottom: 2px solid var(--line); font-weight: 600; }
+nav.subtabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 20px; }
+nav.subtabs a { padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: .95rem; }
+nav.subtabs a:hover { text-decoration: none; color: var(--fg); border-color: var(--accent); }
+nav.subtabs a[aria-current="page"] { color: var(--fg); background: var(--card); border-color: var(--accent); font-weight: 600; }
+code { font-size: .9em; background: var(--card); padding: 1px 5px; border-radius: 4px; }
