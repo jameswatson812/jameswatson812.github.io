@@ -56,7 +56,7 @@ def main():
                 resolved = resolved / "index.html"
             if not resolved.exists():
                 rel_t = str(resolved.relative_to(ROOT)) if str(resolved).startswith(str(ROOT)) else str(resolved)
-                if any(rel_t.startswith(pref) for pref in args.allow_missing):
+                if any(rel_t == pref or rel_t.startswith(pref.rstrip('/') + '/') for pref in args.allow_missing):
                     warnings.append(f"{rel}: {target} not present yet (allowed)")
                 else:
                     errors.append(f"{rel}: broken link {target}")
