@@ -15,6 +15,7 @@ import pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CONTENT = ROOT / "tools" / "content"
 META = ROOT / "fish-genomics" / "fst-101snp" / "meta.json"
+META_PW = ROOT / "fish-genomics" / "fst-101snp-pairs" / "meta.json"
 SITE_NAME = "Lingyu Zhan"
 NAV = [("Home", ""), ("Research", "research/"), ("Publications", "publications/"),
        ("Fish genomics", "fish-genomics/"), ("Human genomics", "human-genomics/")]
@@ -24,7 +25,7 @@ PAGES = [
     ("research/index.html", "Research", "Research", "Research interests and projects.", "research.html", 1),
     ("publications/index.html", "Publications", "Publications", "Selected publications.", "publications.html", 1),
     ("fish-genomics/index.html", "Fish genomics", "Fish genomics",
-     "Population genomics of the tidewater goby: interactive genome-wide F_ST scans in 101-SNP windows.", "fish-genomics.html", 1),
+     "Population genomics of the tidewater goby: interactive genome-wide and pairwise F_ST scans in 101-SNP windows.", "fish-genomics.html", 1),
     ("human-genomics/index.html", "Human genomics", "Human genomics", "Human genomics projects.", "human-genomics.html", 1),
 ]
 # the NB08 readout (goby_08_maruki_panels_R.ipynb, job 14746694), used only when meta.json lacks a field
@@ -98,6 +99,26 @@ def page_numbers():
     }
 
 
+def pairwise_tokens():
+    """Tokens for the pairwise section from fst-101snp-pairs/meta.json (empty menus when absent)."""
+    if not META_PW.exists():
+        print(f"WARN: {META_PW.relative_to(ROOT)} absent, pairwise section built without data")
+        return {"pw_n_pairs": "15", "pw_n_windows_total": "?", "pw_pair_options": "", "pw_summary_rows": "",
+                "pw_per_scaffold_json": "{}"}
+    m = json.loads(META_PW.read_text())
+    opts, rows, per = [], [], {}
+    for p in m["pairs"]:
+        opts.append(f'<option value="{p["pair"]}">{p["label"]}</option>')
+        cut = f'{p["n_outliers"]:,}' + (f' (cutoff {p["cut_line"]:.3f})' if p.get("cut_line") is not None else "")
+        rows.append("    <tr><td>{label}</td><td>{fish}</td><td>{snps}</td><td>{win}</td><td>{fst}</td><td>{wm}</td><td>{out}</td></tr>".format(
+            label=p["label"], fish=f'{p["n_a"]} + {p["n_b"]}', snps=f'{p["n_snps_maf10"]:,}', win=f'{p["n_windows"]:,}',
+            fst=f'{p["fst_maf10"]:.3f}', wm=f'{p["win_mean"]:.3f} ({p["win_sd"]:.3f})', out=cut))
+        per[p["pair"]] = {k: v for k, v in p["per_scaffold"].items() if v}
+    return {"pw_n_pairs": str(m["n_pairs"]), "pw_n_windows_total": f'{m["n_windows_total"]:,}',
+            "pw_pair_options": "".join(opts), "pw_summary_rows": "\n".join(rows),
+            "pw_per_scaffold_json": json.dumps(per, separators=(",", ":"))}
+
+
 def scaffold_options():
     per = load_meta().get("per_scaffold", {})
     opts = []
@@ -117,7 +138,7 @@ def render(out, key, title, description, content, depth):
     nav = "\n".join(links)
     body = (CONTENT / content).read_text()
     body = body.replace("{root}", root).replace("{scaffold_options}", scaffold_options())
-    for token, value in page_numbers().items():
+    for token, value in {**page_numbers(), **pairwise_tokens()}.items():
         body = body.replace("{" + token + "}", value)
     page_title = title if title == SITE_NAME else f"{title} · {SITE_NAME}"
     html = TEMPLATE.format(title=page_title, description=description, root=root, site_name=SITE_NAME,

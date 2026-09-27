@@ -44,6 +44,7 @@ p { margin: .5rem 0 .9rem; }
 .fig { width: 100%; display: block; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
 .fig-genome { height: 500px; }
 .fig-scaf { height: 470px; }
+.fig-matrix { height: 600px; max-width: 760px; }
 @media (max-width: 720px) { .fig-genome, .fig-scaf { height: 380px; } }
 figcaption { color: var(--muted); font-size: .92rem; margin-top: 8px; max-width: 90ch; }
 .controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 12px 0; }
@@ -53,3 +54,8 @@ li { margin: .3rem 0; }
 .small { font-size: .9rem; color: var(--muted); max-width: 90ch; }
 footer.site { border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
 footer.site .wrap { padding-top: 16px; padding-bottom: 16px; }
+.tablewrap { overflow-x: auto; margin: 12px 0 20px; }
+table.summary { border-collapse: collapse; font-size: .9rem; min-width: 640px; }
+table.summary th, table.summary td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+table.summary th:first-child, table.summary td:first-child { text-align: left; }
+table.summary thead th { border-bottom: 2px solid var(--line); font-weight: 600; }

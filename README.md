@@ -10,6 +10,9 @@ Personal site of Lingyu Zhan, served by GitHub Pages from `main` as plain static
   `meta.json`. Produced on Hoffman2 by `scripts/08_functional_categories/25_export_fst101_widgets.job` in the
   goby project (R export from NB08's `fig5_windows_fst.tsv`, then `24b_slim_widgets.py`) and copied here with
   `rsync` from `diversity_clam/eda_outputs_maruki_panels/web/`.
+- `fish-genomics/fst-101snp-pairs/` — the pairwise version (every pair of the six coastal units):
+  `pw_<A>-<B>_genome.html`, `pw_<A>-<B>_SCAF_<k>.html`, `pw_matrix.html`, `png/`, the window tables and `meta.json`.
+  Produced by `25b_export_pairwise_widgets.job` from NB10 (`goby_10_pairwise_fst_windows_R.ipynb`).
 - `docs/DESIGN.md` — the approved design.
 
 Update a page: edit its file under `tools/content/`, run `python3 tools/build.py`, then

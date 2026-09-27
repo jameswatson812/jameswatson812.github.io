@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Fish genomics · Lingyu Zhan</title>
-<meta name="description" content="Population genomics of the tidewater goby: interactive genome-wide F_ST scans in 101-SNP windows.">
+<meta name="description" content="Population genomics of the tidewater goby: interactive genome-wide and pairwise F_ST scans in 101-SNP windows.">
 <link rel="stylesheet" href="../assets/site.css">
 </head>
 <body>
@@ -36,18 +36,87 @@
   <figcaption>Black points are windows, red points are outliers, the red line is the outlier cutoff. Hover for the window coordinates, F<sub>ST</sub>, <em>t</em> and gene content.</figcaption>
 </figure>
 
+<h2 id="pairwise">Pairwise scans between coastal units</h2>
+<p>The same window design applied to each of the 15 pairs of the six coastal units, South Coast included (a between-species comparison, <em>E. kefauveri</em> against <em>E. newberryi</em>). For each pair the SNPs are those with at least 5 fish genotyped in both units and a minor-allele frequency &ge; 0.1 in the pair's pooled allele counts, so every pair has its own SNP set and window boundaries; outliers are called within each pair by the same bin-wise rule. The matrix gives the genome-wide F<sub>ST</sub> between units as the ratio of summed variance components over those SNPs.</p>
+<figure class="figwrap">
+  <iframe class="fig fig-matrix" src="fst-101snp-pairs/pw_matrix.html" title="Genome-wide pairwise F_ST between coastal units" loading="lazy"></iframe>
+  <figcaption>Genome-wide F<sub>ST</sub> between units over the SNPs the windows use. Hover a cell for the SNP and window counts and the value without the frequency filter. <a href="fst-101snp-pairs/png/pairwise_fst_matrix.png">Static PNG</a>.</figcaption>
+</figure>
+<div class="tablewrap"><table class="summary">
+  <thead><tr><th>Pair</th><th>Fish</th><th>SNPs (MAF &ge; 0.1)</th><th>Windows</th><th>F<sub>ST</sub></th><th>Mean window F<sub>ST</sub> (SD)</th><th>Outlier windows</th></tr></thead>
+  <tbody>
+    <tr><td>North Coast vs GBA</td><td>71 + 20</td><td>34,904</td><td>335</td><td>0.359</td><td>0.351 (0.116)</td><td>9 (cutoff 0.631)</td></tr>
+    <tr><td>North Coast vs Central Coast</td><td>71 + 30</td><td>76,911</td><td>749</td><td>0.671</td><td>0.664 (0.098)</td><td>3 (cutoff 0.905)</td></tr>
+    <tr><td>North Coast vs Conception</td><td>71 + 80</td><td>101,432</td><td>994</td><td>0.781</td><td>0.769 (0.107)</td><td>0</td></tr>
+    <tr><td>North Coast vs LA_Ventura</td><td>71 + 32</td><td>101,765</td><td>995</td><td>0.804</td><td>0.796 (0.093)</td><td>0</td></tr>
+    <tr><td>North Coast vs South Coast</td><td>71 + 29</td><td>242,166</td><td>2,386</td><td>0.956</td><td>0.954 (0.046)</td><td>0</td></tr>
+    <tr><td>GBA vs Central Coast</td><td>20 + 30</td><td>112,188</td><td>1,100</td><td>0.435</td><td>0.426 (0.094)</td><td>8 (cutoff 0.689)</td></tr>
+    <tr><td>GBA vs Conception</td><td>20 + 80</td><td>98,817</td><td>969</td><td>0.673</td><td>0.660 (0.132)</td><td>1 (cutoff 0.984)</td></tr>
+    <tr><td>GBA vs LA_Ventura</td><td>20 + 32</td><td>114,203</td><td>1,118</td><td>0.668</td><td>0.657 (0.109)</td><td>6 (cutoff 0.895)</td></tr>
+    <tr><td>GBA vs South Coast</td><td>20 + 29</td><td>238,192</td><td>2,348</td><td>0.947</td><td>0.944 (0.053)</td><td>0</td></tr>
+    <tr><td>Central Coast vs Conception</td><td>30 + 80</td><td>94,800</td><td>927</td><td>0.461</td><td>0.452 (0.123)</td><td>3 (cutoff 0.773)</td></tr>
+    <tr><td>Central Coast vs LA_Ventura</td><td>30 + 32</td><td>122,325</td><td>1,201</td><td>0.437</td><td>0.428 (0.100)</td><td>7 (cutoff 0.718)</td></tr>
+    <tr><td>Central Coast vs South Coast</td><td>30 + 29</td><td>269,973</td><td>2,663</td><td>0.887</td><td>0.881 (0.069)</td><td>0</td></tr>
+    <tr><td>Conception vs LA_Ventura</td><td>80 + 32</td><td>76,982</td><td>752</td><td>0.246</td><td>0.243 (0.091)</td><td>5 (cutoff 0.477)</td></tr>
+    <tr><td>Conception vs South Coast</td><td>80 + 29</td><td>258,759</td><td>2,549</td><td>0.909</td><td>0.903 (0.077)</td><td>0</td></tr>
+    <tr><td>LA_Ventura vs South Coast</td><td>32 + 29</td><td>268,144</td><td>2,644</td><td>0.908</td><td>0.902 (0.065)</td><td>0</td></tr>
+  </tbody>
+</table></div>
+<p class="controls"><label for="pw-pair">Pair</label> <select id="pw-pair"><option value="NC-GBA">North Coast vs GBA</option><option value="NC-CC">North Coast vs Central Coast</option><option value="NC-CO">North Coast vs Conception</option><option value="NC-LA">North Coast vs LA_Ventura</option><option value="NC-SC">North Coast vs South Coast</option><option value="GBA-CC">GBA vs Central Coast</option><option value="GBA-CO">GBA vs Conception</option><option value="GBA-LA">GBA vs LA_Ventura</option><option value="GBA-SC">GBA vs South Coast</option><option value="CC-CO">Central Coast vs Conception</option><option value="CC-LA">Central Coast vs LA_Ventura</option><option value="CC-SC">Central Coast vs South Coast</option><option value="CO-LA">Conception vs LA_Ventura</option><option value="CO-SC">Conception vs South Coast</option><option value="LA-SC">LA_Ventura vs South Coast</option></select> <a id="pw-genome-png" href="fst-101snp-pairs/png/pair_scan_NC-GBA.png">Static PNG</a></p>
+<figure class="figwrap">
+  <iframe id="pw-genome-frame" class="fig fig-genome" src="fst-101snp-pairs/pw_NC-GBA_genome.html" title="Pairwise window F_ST along SCAF_1 to SCAF_22" loading="lazy"></iframe>
+  <figcaption>All windows of the selected pair, scaffolds end to end in alternating colours; outliers in red, the red line at the pair's lowest outlier F<sub>ST</sub>. Hover for coordinates, F<sub>ST</sub>, <em>t</em> and genes.</figcaption>
+</figure>
+<p class="controls"><label for="pw-scaf">Scaffold</label> <select id="pw-scaf"></select></p>
+<figure class="figwrap">
+  <iframe id="pw-scaf-frame" class="fig fig-scaf" src="fst-101snp-pairs/pw_NC-GBA_SCAF_1.html" title="Pairwise window F_ST along one scaffold" loading="lazy"></iframe>
+  <figcaption>One scaffold of the selected pair: black points are windows, red points are outliers.</figcaption>
+</figure>
+<script>
+(function () {
+  var per = {"NC-GBA":{"SCAF_1":20,"SCAF_2":22,"SCAF_3":14,"SCAF_4":18,"SCAF_5":15,"SCAF_6":17,"SCAF_7":10,"SCAF_8":14,"SCAF_9":15,"SCAF_10":13,"SCAF_11":22,"SCAF_12":13,"SCAF_13":17,"SCAF_14":17,"SCAF_15":14,"SCAF_16":14,"SCAF_17":14,"SCAF_18":13,"SCAF_19":15,"SCAF_20":10,"SCAF_21":15,"SCAF_22":13},"NC-CC":{"SCAF_1":43,"SCAF_2":44,"SCAF_3":35,"SCAF_4":36,"SCAF_5":37,"SCAF_6":40,"SCAF_7":23,"SCAF_8":33,"SCAF_9":25,"SCAF_10":30,"SCAF_11":40,"SCAF_12":30,"SCAF_13":39,"SCAF_14":42,"SCAF_15":35,"SCAF_16":33,"SCAF_17":30,"SCAF_18":30,"SCAF_19":31,"SCAF_20":25,"SCAF_21":36,"SCAF_22":32},"NC-CO":{"SCAF_1":57,"SCAF_2":58,"SCAF_3":48,"SCAF_4":53,"SCAF_5":48,"SCAF_6":53,"SCAF_7":31,"SCAF_8":43,"SCAF_9":36,"SCAF_10":39,"SCAF_11":54,"SCAF_12":38,"SCAF_13":52,"SCAF_14":51,"SCAF_15":48,"SCAF_16":42,"SCAF_17":44,"SCAF_18":40,"SCAF_19":40,"SCAF_20":32,"SCAF_21":48,"SCAF_22":39},"NC-LA":{"SCAF_1":60,"SCAF_2":60,"SCAF_3":49,"SCAF_4":51,"SCAF_5":48,"SCAF_6":52,"SCAF_7":32,"SCAF_8":43,"SCAF_9":37,"SCAF_10":40,"SCAF_11":54,"SCAF_12":38,"SCAF_13":51,"SCAF_14":52,"SCAF_15":47,"SCAF_16":42,"SCAF_17":42,"SCAF_18":40,"SCAF_19":41,"SCAF_20":33,"SCAF_21":44,"SCAF_22":39},"NC-SC":{"SCAF_1":148,"SCAF_2":141,"SCAF_3":116,"SCAF_4":122,"SCAF_5":120,"SCAF_6":125,"SCAF_7":78,"SCAF_8":102,"SCAF_9":82,"SCAF_10":102,"SCAF_11":126,"SCAF_12":101,"SCAF_13":114,"SCAF_14":112,"SCAF_15":113,"SCAF_16":102,"SCAF_17":103,"SCAF_18":99,"SCAF_19":101,"SCAF_20":85,"SCAF_21":101,"SCAF_22":93},"GBA-CC":{"SCAF_1":62,"SCAF_2":62,"SCAF_3":52,"SCAF_4":54,"SCAF_5":55,"SCAF_6":59,"SCAF_7":34,"SCAF_8":50,"SCAF_9":38,"SCAF_10":43,"SCAF_11":59,"SCAF_12":45,"SCAF_13":57,"SCAF_14":60,"SCAF_15":51,"SCAF_16":48,"SCAF_17":46,"SCAF_18":46,"SCAF_19":44,"SCAF_20":36,"SCAF_21":54,"SCAF_22":45},"GBA-CO":{"SCAF_1":53,"SCAF_2":54,"SCAF_3":46,"SCAF_4":51,"SCAF_5":48,"SCAF_6":53,"SCAF_7":31,"SCAF_8":42,"SCAF_9":37,"SCAF_10":38,"SCAF_11":55,"SCAF_12":38,"SCAF_13":50,"SCAF_14":47,"SCAF_15":47,"SCAF_16":41,"SCAF_17":42,"SCAF_18":39,"SCAF_19":38,"SCAF_20":32,"SCAF_21":48,"SCAF_22":39},"GBA-LA":{"SCAF_1":66,"SCAF_2":66,"SCAF_3":54,"SCAF_4":58,"SCAF_5":55,"SCAF_6":59,"SCAF_7":36,"SCAF_8":49,"SCAF_9":41,"SCAF_10":45,"SCAF_11":62,"SCAF_12":43,"SCAF_13":57,"SCAF_14":56,"SCAF_15":52,"SCAF_16":48,"SCAF_17":49,"SCAF_18":44,"SCAF_19":45,"SCAF_20":38,"SCAF_21":52,"SCAF_22":43},"GBA-SC":{"SCAF_1":145,"SCAF_2":137,"SCAF_3":114,"SCAF_4":120,"SCAF_5":118,"SCAF_6":124,"SCAF_7":77,"SCAF_8":102,"SCAF_9":81,"SCAF_10":100,"SCAF_11":125,"SCAF_12":100,"SCAF_13":114,"SCAF_14":109,"SCAF_15":110,"SCAF_16":102,"SCAF_17":101,"SCAF_18":97,"SCAF_19":98,"SCAF_20":84,"SCAF_21":99,"SCAF_22":91},"CC-CO":{"SCAF_1":52,"SCAF_2":51,"SCAF_3":43,"SCAF_4":51,"SCAF_5":46,"SCAF_6":49,"SCAF_7":30,"SCAF_8":41,"SCAF_9":34,"SCAF_10":37,"SCAF_11":54,"SCAF_12":37,"SCAF_13":47,"SCAF_14":43,"SCAF_15":46,"SCAF_16":38,"SCAF_17":41,"SCAF_18":38,"SCAF_19":36,"SCAF_20":30,"SCAF_21":45,"SCAF_22":38},"CC-LA":{"SCAF_1":70,"SCAF_2":68,"SCAF_3":57,"SCAF_4":63,"SCAF_5":60,"SCAF_6":61,"SCAF_7":38,"SCAF_8":53,"SCAF_9":43,"SCAF_10":48,"SCAF_11":67,"SCAF_12":49,"SCAF_13":59,"SCAF_14":61,"SCAF_15":57,"SCAF_16":49,"SCAF_17":53,"SCAF_18":51,"SCAF_19":48,"SCAF_20":41,"SCAF_21":57,"SCAF_22":48},"CC-SC":{"SCAF_1":163,"SCAF_2":155,"SCAF_3":130,"SCAF_4":135,"SCAF_5":135,"SCAF_6":141,"SCAF_7":86,"SCAF_8":116,"SCAF_9":90,"SCAF_10":112,"SCAF_11":141,"SCAF_12":112,"SCAF_13":127,"SCAF_14":128,"SCAF_15":126,"SCAF_16":116,"SCAF_17":115,"SCAF_18":112,"SCAF_19":111,"SCAF_20":95,"SCAF_21":113,"SCAF_22":104},"CO-LA":{"SCAF_1":42,"SCAF_2":40,"SCAF_3":36,"SCAF_4":39,"SCAF_5":38,"SCAF_6":40,"SCAF_7":23,"SCAF_8":32,"SCAF_9":30,"SCAF_10":29,"SCAF_11":47,"SCAF_12":29,"SCAF_13":37,"SCAF_14":36,"SCAF_15":37,"SCAF_16":32,"SCAF_17":33,"SCAF_18":30,"SCAF_19":29,"SCAF_20":24,"SCAF_21":37,"SCAF_22":32},"CO-SC":{"SCAF_1":155,"SCAF_2":147,"SCAF_3":124,"SCAF_4":130,"SCAF_5":131,"SCAF_6":135,"SCAF_7":83,"SCAF_8":111,"SCAF_9":89,"SCAF_10":108,"SCAF_11":136,"SCAF_12":108,"SCAF_13":122,"SCAF_14":118,"SCAF_15":120,"SCAF_16":110,"SCAF_17":112,"SCAF_18":106,"SCAF_19":105,"SCAF_20":90,"SCAF_21":109,"SCAF_22":100},"LA-SC":{"SCAF_1":163,"SCAF_2":155,"SCAF_3":128,"SCAF_4":135,"SCAF_5":135,"SCAF_6":138,"SCAF_7":86,"SCAF_8":115,"SCAF_9":94,"SCAF_10":113,"SCAF_11":142,"SCAF_12":112,"SCAF_13":124,"SCAF_14":123,"SCAF_15":124,"SCAF_16":114,"SCAF_17":116,"SCAF_18":110,"SCAF_19":110,"SCAF_20":94,"SCAF_21":112,"SCAF_22":101}};
+  var pair = document.getElementById('pw-pair'), scaf = document.getElementById('pw-scaf');
+  var gframe = document.getElementById('pw-genome-frame'), sframe = document.getElementById('pw-scaf-frame');
+  var gpng = document.getElementById('pw-genome-png');
+  function fillScafs(p, keep) {
+    var counts = per[p] || {}; scaf.innerHTML = '';
+    for (var k = 1; k <= 22; k++) {
+      var n = counts['SCAF_' + k]; if (!n) continue;
+      var o = document.createElement('option'); o.value = String(k); o.textContent = 'SCAF_' + k + ' (' + n + ' windows)';
+      scaf.appendChild(o);
+    }
+    if (keep && counts['SCAF_' + keep]) scaf.value = String(keep);
+  }
+  function setSrc(frame, url) { if (frame.getAttribute('src') !== url) frame.src = url; }
+  function show(p, k) {
+    fillScafs(p, k); k = scaf.value || '1';
+    setSrc(gframe, 'fst-101snp-pairs/pw_' + p + '_genome.html');
+    gpng.href = 'fst-101snp-pairs/png/pair_scan_' + p + '.png';
+    setSrc(sframe, 'fst-101snp-pairs/pw_' + p + '_SCAF_' + k + '.html');
+    pair.value = p;
+    try { history.replaceState(null, '', '#pw-' + p + '-SCAF_' + k); } catch (e) {}
+  }
+  pair.addEventListener('change', function () { show(pair.value, 1); });
+  scaf.addEventListener('change', function () { show(pair.value, scaf.value); });
+  var m = /^#pw-([A-Z]+-[A-Z]+)-SCAF_(\d+)$/.exec(location.hash);
+  if (m && per[m[1]]) show(m[1], m[2]); else fillScafs(pair.value, 1);
+})();
+</script>
+
 <h3>SNPs and windows used here</h3>
 <ul>
   <li><strong>Samples.</strong> 262 fish sequenced to a mean depth of at least 6&times;. The metapopulation is the 233 fish of the five northern units (North Coast 71, Greater Bay Area 20, Central Coast 30, Conception 80, LA/Ventura 32); the South Coast unit (29 fish, <em>E. kefauveri</em>) is excluded.</li>
   <li><strong>Sites.</strong> Biallelic SNPs at high-quality sites: outside repeats and low-mappability regions, genotypes PASS with depth &ge; 6 and GQ &ge; 20, callable in at least 236 of the 262 fish, mean depth &le; 28&times; to exclude collapsed paralogs. 1,739,987 SNPs in total, 1,422,005 of them polymorphic within the metapopulation.</li>
   <li><strong>Frequency filter.</strong> Metapopulation minor-allele frequency &ge; 0.1, with genotypes in at least 4 of the 5 units: 103,251 SNPs (7% of the polymorphic set).</li>
   <li><strong>Windows.</strong> Non-overlapping blocks of 101 consecutive qualifying SNPs along each scaffold, incomplete final blocks dropped: 1,010 windows covering 102,010 SNPs, median span 0.8 Mb. Window F<sub>ST</sub> = &Sigma;a / &Sigma;(a + b + c) over its SNPs; the window sampling variance is a delete-one jackknife over the SNPs.</li>
+  <li><strong>Pairwise scans.</strong> The same window rule for each of the 15 pairs of units, with the frequency filter computed on the pair's pooled allele counts and both units required to have at least 5 fish genotyped; SNP and window counts per pair are in the table above, 21,730 windows in all.</li>
 </ul>
 
 <h3>Data</h3>
 <ul>
   <li><a href="fst-101snp/fst101_windows.tsv">All windows</a> (TSV): scaffold, start, end, F<sub>ST</sub>, jackknife variance, <em>t</em>, bin cutoff, outlier flag and genes for each of the 1,010 windows.</li>
   <li><a href="fst-101snp/fst101_outlier_windows.tsv">Outlier windows</a> (TSV).</li>
+  <li><a href="fst-101snp-pairs/pairwise_windows_all.tsv.gz">All pairwise windows</a> (gzipped TSV): every window of every pair with F<sub>ST</sub>, <em>t</em>, outlier flag and genes; <a href="fst-101snp-pairs/pairwise_summary.tsv">per-pair summary</a>, <a href="fst-101snp-pairs/pairwise_outlier_windows.tsv">pairwise outlier windows</a> and the <a href="fst-101snp-pairs/pairwise_fst_matrix.tsv">F<sub>ST</sub> matrix</a> (TSV).</li>
 </ul>
 <p class="small">Window design and outlier rule after <a href="https://doi.org/10.1093/molbev/msac152">Maruki, Ye &amp; Lynch (2022), <em>Mol. Biol. Evol.</em> 39:msac152</a>. Figures rendered with <a href="https://plotly.com/r/">plotly</a> for R.</p>
 <script>

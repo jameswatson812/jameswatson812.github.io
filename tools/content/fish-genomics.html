@@ -15,18 +15,73 @@
   <figcaption>Black points are windows, red points are outliers, the red line is the outlier cutoff. Hover for the window coordinates, F<sub>ST</sub>, <em>t</em> and gene content.</figcaption>
 </figure>
 
+<h2 id="pairwise">Pairwise scans between coastal units</h2>
+<p>The same window design applied to each of the {pw_n_pairs} pairs of the six coastal units, South Coast included (a between-species comparison, <em>E. kefauveri</em> against <em>E. newberryi</em>). For each pair the SNPs are those with at least 5 fish genotyped in both units and a minor-allele frequency &ge; 0.1 in the pair's pooled allele counts, so every pair has its own SNP set and window boundaries; outliers are called within each pair by the same bin-wise rule. The matrix gives the genome-wide F<sub>ST</sub> between units as the ratio of summed variance components over those SNPs.</p>
+<figure class="figwrap">
+  <iframe class="fig fig-matrix" src="fst-101snp-pairs/pw_matrix.html" title="Genome-wide pairwise F_ST between coastal units" loading="lazy"></iframe>
+  <figcaption>Genome-wide F<sub>ST</sub> between units over the SNPs the windows use. Hover a cell for the SNP and window counts and the value without the frequency filter. <a href="fst-101snp-pairs/png/pairwise_fst_matrix.png">Static PNG</a>.</figcaption>
+</figure>
+<div class="tablewrap"><table class="summary">
+  <thead><tr><th>Pair</th><th>Fish</th><th>SNPs (MAF &ge; 0.1)</th><th>Windows</th><th>F<sub>ST</sub></th><th>Mean window F<sub>ST</sub> (SD)</th><th>Outlier windows</th></tr></thead>
+  <tbody>
+{pw_summary_rows}
+  </tbody>
+</table></div>
+<p class="controls"><label for="pw-pair">Pair</label> <select id="pw-pair">{pw_pair_options}</select> <a id="pw-genome-png" href="fst-101snp-pairs/png/pair_scan_NC-GBA.png">Static PNG</a></p>
+<figure class="figwrap">
+  <iframe id="pw-genome-frame" class="fig fig-genome" src="fst-101snp-pairs/pw_NC-GBA_genome.html" title="Pairwise window F_ST along SCAF_1 to SCAF_22" loading="lazy"></iframe>
+  <figcaption>All windows of the selected pair, scaffolds end to end in alternating colours; outliers in red, the red line at the pair's lowest outlier F<sub>ST</sub>. Hover for coordinates, F<sub>ST</sub>, <em>t</em> and genes.</figcaption>
+</figure>
+<p class="controls"><label for="pw-scaf">Scaffold</label> <select id="pw-scaf"></select></p>
+<figure class="figwrap">
+  <iframe id="pw-scaf-frame" class="fig fig-scaf" src="fst-101snp-pairs/pw_NC-GBA_SCAF_1.html" title="Pairwise window F_ST along one scaffold" loading="lazy"></iframe>
+  <figcaption>One scaffold of the selected pair: black points are windows, red points are outliers.</figcaption>
+</figure>
+<script>
+(function () {
+  var per = {pw_per_scaffold_json};
+  var pair = document.getElementById('pw-pair'), scaf = document.getElementById('pw-scaf');
+  var gframe = document.getElementById('pw-genome-frame'), sframe = document.getElementById('pw-scaf-frame');
+  var gpng = document.getElementById('pw-genome-png');
+  function fillScafs(p, keep) {
+    var counts = per[p] || {}; scaf.innerHTML = '';
+    for (var k = 1; k <= 22; k++) {
+      var n = counts['SCAF_' + k]; if (!n) continue;
+      var o = document.createElement('option'); o.value = String(k); o.textContent = 'SCAF_' + k + ' (' + n + ' windows)';
+      scaf.appendChild(o);
+    }
+    if (keep && counts['SCAF_' + keep]) scaf.value = String(keep);
+  }
+  function setSrc(frame, url) { if (frame.getAttribute('src') !== url) frame.src = url; }
+  function show(p, k) {
+    fillScafs(p, k); k = scaf.value || '1';
+    setSrc(gframe, 'fst-101snp-pairs/pw_' + p + '_genome.html');
+    gpng.href = 'fst-101snp-pairs/png/pair_scan_' + p + '.png';
+    setSrc(sframe, 'fst-101snp-pairs/pw_' + p + '_SCAF_' + k + '.html');
+    pair.value = p;
+    try { history.replaceState(null, '', '#pw-' + p + '-SCAF_' + k); } catch (e) {}
+  }
+  pair.addEventListener('change', function () { show(pair.value, 1); });
+  scaf.addEventListener('change', function () { show(pair.value, scaf.value); });
+  var m = /^#pw-([A-Z]+-[A-Z]+)-SCAF_(\d+)$/.exec(location.hash);
+  if (m && per[m[1]]) show(m[1], m[2]); else fillScafs(pair.value, 1);
+})();
+</script>
+
 <h3>SNPs and windows used here</h3>
 <ul>
   <li><strong>Samples.</strong> 262 fish sequenced to a mean depth of at least 6&times;. The metapopulation is the 233 fish of the five northern units (North Coast 71, Greater Bay Area 20, Central Coast 30, Conception 80, LA/Ventura 32); the South Coast unit (29 fish, <em>E. kefauveri</em>) is excluded.</li>
   <li><strong>Sites.</strong> Biallelic SNPs at high-quality sites: outside repeats and low-mappability regions, genotypes PASS with depth &ge; 6 and GQ &ge; 20, callable in at least 236 of the 262 fish, mean depth &le; 28&times; to exclude collapsed paralogs. {n_total} SNPs in total, {n_poly} of them polymorphic within the metapopulation.</li>
   <li><strong>Frequency filter.</strong> Metapopulation minor-allele frequency &ge; 0.1, with genotypes in at least 4 of the 5 units: {n_snps_maf10} SNPs ({pct_maf10} of the polymorphic set).</li>
   <li><strong>Windows.</strong> Non-overlapping blocks of 101 consecutive qualifying SNPs along each scaffold, incomplete final blocks dropped: {n_windows} windows covering {n_snps_in_windows} SNPs, median span {span_mb} Mb. Window F<sub>ST</sub> = &Sigma;a / &Sigma;(a + b + c) over its SNPs; the window sampling variance is a delete-one jackknife over the SNPs.</li>
+  <li><strong>Pairwise scans.</strong> The same window rule for each of the {pw_n_pairs} pairs of units, with the frequency filter computed on the pair's pooled allele counts and both units required to have at least 5 fish genotyped; SNP and window counts per pair are in the table above, {pw_n_windows_total} windows in all.</li>
 </ul>
 
 <h3>Data</h3>
 <ul>
   <li><a href="fst-101snp/fst101_windows.tsv">All windows</a> (TSV): scaffold, start, end, F<sub>ST</sub>, jackknife variance, <em>t</em>, bin cutoff, outlier flag and genes for each of the {n_windows} windows.</li>
   <li><a href="fst-101snp/fst101_outlier_windows.tsv">Outlier windows</a> (TSV).</li>
+  <li><a href="fst-101snp-pairs/pairwise_windows_all.tsv.gz">All pairwise windows</a> (gzipped TSV): every window of every pair with F<sub>ST</sub>, <em>t</em>, outlier flag and genes; <a href="fst-101snp-pairs/pairwise_summary.tsv">per-pair summary</a>, <a href="fst-101snp-pairs/pairwise_outlier_windows.tsv">pairwise outlier windows</a> and the <a href="fst-101snp-pairs/pairwise_fst_matrix.tsv">F<sub>ST</sub> matrix</a> (TSV).</li>
 </ul>
 <p class="small">Window design and outlier rule after <a href="https://doi.org/10.1093/molbev/msac152">Maruki, Ye &amp; Lynch (2022), <em>Mol. Biol. Evol.</em> 39:msac152</a>. Figures rendered with <a href="https://plotly.com/r/">plotly</a> for R.</p>
 <script>

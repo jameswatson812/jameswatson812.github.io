@@ -40,3 +40,13 @@ printed SNP counts extracted from the executed notebook. The "How to read these"
 by "SNPs and windows used here": samples, site filters, frequency filter, window rule and totals.
 The 1 kb panels were removed from the site; they remain in git history and on the cluster under
 `eda_outputs_fst_windows_1kb/web/`.
+
+## Revision 2026-09-26: pairwise scans between coastal units
+User request: the same window design for every pair of coastal units. NB10
+(`goby_10_pairwise_fst_windows_R.ipynb`) computes, for each of the 15 pairs of the six units (South
+Coast included), Weir-Cockerham theta with K = 2 over SNPs with >= 5 fish genotyped in both units and
+pooled MAF >= 0.1, in non-overlapping 101-SNP windows, with the bin-wise outlier rule applied per pair.
+`25b_export_pairwise_widgets.job` exports a genome overview and per-scaffold panels for every pair plus
+a genome-wide F_ST matrix; the page gets a "Pairwise scans" section with pair and scaffold menus, a
+summary table filled from `meta.json`, and the downloads. Only genome-wide PNGs are kept as fallbacks
+(one per pair); per-scaffold PNGs would be 330 files for little gain.
