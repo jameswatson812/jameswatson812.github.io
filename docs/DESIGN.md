@@ -60,3 +60,6 @@ summary table filled from `meta.json`, and the downloads. Only genome-wide PNGs 
   `25b_export_pairwise_widgets.job` into `fish-genomics/fst-101snp-pairs[-replacement|-silent]/`; the
   page's pairwise section has a site-class switch that swaps the matrix, the summary table and the panels.
   A pair without a complete window gets a placeholder overview so every URL the page can build exists.
+
+## Correction 2026-10-06
+The southern species is *Eucyclogobius kristinae* (Swift et al. 2016, PLoS ONE 11:e0158543); earlier text said "E. kefauveri", a name that does not exist.
