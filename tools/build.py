@@ -27,7 +27,7 @@ PAGES = [
      "Population genomics of the tidewater goby: interactive genome-wide and pairwise F_ST scans in 101-SNP windows.", "fish-genomics.html", 1),
     ("fish-genomics/heterozygosity/index.html", "Fish genomics", "Heterozygosity",
      "Per-sample heterozygosity of the tidewater goby by coastal unit and subunit, coloured by sampling era.", "fish-het.html", 2),
-    ("human-genomics/index.html", "Human genomics", "Human genomics", "Human genomics projects.", "human-genomics.html", 1),
+    # human-genomics/ is hand-maintained (password-gated pages added 2026-09-27) and is NOT generated here
 ]
 # sub-tabs shown on every Fish genomics page (output path prefix -> label)
 FISH_SUBNAV = [("F<sub>ST</sub> scans", "fish-genomics/"), ("Heterozygosity", "fish-genomics/heterozygosity/")]
