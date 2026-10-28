@@ -1,0 +1,272 @@
+[
+  {
+    "id": "Q1.1",
+    "session": 1,
+    "kind": "quiz",
+    "prompt": "How many encounters were with patients aged 90 or older at the visit?"
+  },
+  {
+    "id": "Q1.2",
+    "session": 1,
+    "kind": "quiz",
+    "prompt": "How many encounters have a check-in time but no check-out time?"
+  },
+  {
+    "id": "Q1.3",
+    "session": 1,
+    "kind": "quiz",
+    "prompt": "How many encounters took place in January 2021?"
+  },
+  {
+    "id": "Q1.4",
+    "session": 1,
+    "kind": "quiz",
+    "prompt": "How many lab components have the LOINC code 13457-7 or 18262-6?"
+  },
+  {
+    "id": "Q1.5",
+    "session": 1,
+    "kind": "quiz",
+    "prompt": "How many patients had an encounter in 2019 and no encounter from 1 January 2020 on? (Use EXCEPT.)"
+  },
+  {
+    "id": "E2.1",
+    "session": 1,
+    "kind": "exercise",
+    "prompt": "How many encounters were with patients aged 30 at the visit?"
+  },
+  {
+    "id": "E2.2",
+    "session": 1,
+    "kind": "exercise",
+    "prompt": "How many encounters were with patients under 18 at the visit?"
+  },
+  {
+    "id": "E2.3",
+    "session": 1,
+    "kind": "exercise",
+    "prompt": "How many encounters were with patients in their twenties (20 to 29) who spent any time in intensive care?"
+  },
+  {
+    "id": "E3.1",
+    "session": 1,
+    "kind": "exercise",
+    "prompt": "How many encounters included at least 7 days in intensive care?"
+  },
+  {
+    "id": "E3.3",
+    "session": 1,
+    "kind": "exercise",
+    "prompt": "How many discharge disposition codes are there?"
+  },
+  {
+    "id": "E3.4",
+    "session": 1,
+    "kind": "exercise",
+    "prompt": "How many lab components have LDL in their component name or their common name?"
+  },
+  {
+    "id": "E4.1",
+    "session": 1,
+    "kind": "exercise",
+    "prompt": "On 1 March 2022, how many (patient, encounter) pairs are in both result sets: patients aged 25 or under, and patients aged 20 to 30?"
+  },
+  {
+    "id": "E4.2",
+    "session": 1,
+    "kind": "exercise",
+    "prompt": "How many rows does the UNION of the two result sets return?"
+  },
+  {
+    "id": "E4.2b",
+    "session": 1,
+    "kind": "exercise",
+    "prompt": "How many rows does UNION ALL of the two result sets return?"
+  },
+  {
+    "id": "E4.3a",
+    "session": 1,
+    "kind": "exercise",
+    "prompt": "How many rows does the first result set EXCEPT the second return (patients aged under 20)?"
+  },
+  {
+    "id": "E4.3b",
+    "session": 1,
+    "kind": "exercise",
+    "prompt": "With the two result sets swapped, how many rows does EXCEPT return (patients aged 26 to 30)?"
+  },
+  {
+    "id": "Q2.1",
+    "session": 2,
+    "kind": "quiz",
+    "prompt": "How many distinct patients have the ICD-10-CM diagnosis I25.10, from any source?"
+  },
+  {
+    "id": "Q2.2",
+    "session": 2,
+    "kind": "quiz",
+    "prompt": "How many encounters in 2022 took place at departments whose location name contains RONALD REAGAN? Count each encounter once."
+  },
+  {
+    "id": "Q2.3",
+    "session": 2,
+    "kind": "quiz",
+    "prompt": "How many patients had at least 3 encounters in 2023?"
+  },
+  {
+    "id": "Q2.4",
+    "session": 2,
+    "kind": "quiz",
+    "prompt": "Take each patient's first LDL-C result in 2022 (LOINC 13457-7 or 18262-6). For how many patients was it 190 mg/dL or more?"
+  },
+  {
+    "id": "Q2.5",
+    "session": 2,
+    "kind": "quiz",
+    "prompt": "How many patients had a statin order in 2023? (A statin's generic name contains 'vastatin'.)"
+  },
+  {
+    "id": "E5a.3",
+    "session": 2,
+    "kind": "exercise",
+    "prompt": "Join encounters to departments with a LEFT JOIN on the department ID. How many rows have a room name?"
+  },
+  {
+    "id": "E5b.3",
+    "session": 2,
+    "kind": "exercise",
+    "prompt": "How many encounters have at least 7 hours (420 minutes) between check-in and check-out, for patients with a preferred language recorded?"
+  },
+  {
+    "id": "E5b.4",
+    "session": 2,
+    "kind": "exercise",
+    "prompt": "How many inpatient encounters lasted at least 7 days and have a discharge disposition?"
+  },
+  {
+    "id": "E6.2",
+    "session": 2,
+    "kind": "exercise",
+    "prompt": "In November 2022, how many lab orders were placed at the location with the most lab orders?"
+  },
+  {
+    "id": "E6.3",
+    "session": 2,
+    "kind": "exercise",
+    "prompt": "In November 2022, how many lab orders were placed at locations whose name contains RONALD REAGAN?"
+  },
+  {
+    "id": "E7.2",
+    "session": 2,
+    "kind": "exercise",
+    "prompt": "How many patients had a positive COVID-19 test in 2022 (any result 'detected' or 'positive', resulted orders only)?"
+  },
+  {
+    "id": "E7.3",
+    "session": 2,
+    "kind": "exercise",
+    "prompt": "How many Tylenol orders were placed for adults (18 or older at the encounter) in January 2021?"
+  },
+  {
+    "id": "E8.1",
+    "session": 2,
+    "kind": "exercise",
+    "prompt": "How many patients had an encounter diagnosis of the common cold (ICD-10-CM J00) at an encounter in 2020?"
+  },
+  {
+    "id": "E8.2",
+    "session": 2,
+    "kind": "exercise",
+    "prompt": "How many patients had a common cold diagnosis (ICD-10-CM J00) from any source, with a start date in 2020?"
+  },
+  {
+    "id": "E9.1",
+    "session": 2,
+    "kind": "exercise",
+    "prompt": "How many encounters have mean arterial pressure entries?"
+  },
+  {
+    "id": "E10.3a",
+    "session": 2,
+    "kind": "exercise",
+    "prompt": "Attrition table, step 1: how many patients have an LDL-C result (LOINC 13457-7 or 18262-6) in 2022?"
+  },
+  {
+    "id": "E10.3b",
+    "session": 2,
+    "kind": "exercise",
+    "prompt": "Attrition table, step 2: of those patients, how many were 18 or older at their first 2022 LDL-C result?"
+  },
+  {
+    "id": "E10.3c",
+    "session": 2,
+    "kind": "exercise",
+    "prompt": "Attrition table, step 3: of the adults, how many had no statin order in the 365 days before their first 2022 LDL-C result?"
+  },
+  {
+    "id": "Q3.1",
+    "session": 3,
+    "kind": "quiz",
+    "prompt": "How many distinct biobank samples were collected in 2021?"
+  },
+  {
+    "id": "Q3.2",
+    "session": 3,
+    "kind": "quiz",
+    "prompt": "How many genotyped samples have a recorded sex that disagrees with the sex inferred from the genotypes?"
+  },
+  {
+    "id": "Q3.3",
+    "session": 3,
+    "kind": "quiz",
+    "prompt": "How many genotyped samples come from patients with the ICD-10-CM diagnosis E11.9, from any source?"
+  },
+  {
+    "id": "Q3.4",
+    "session": 3,
+    "kind": "quiz",
+    "prompt": "How many genotyped SNPs lie on chromosome 19 between positions 11,200,000 and 11,245,000 (GRCh37), ends included?"
+  },
+  {
+    "id": "Q3.5",
+    "session": 3,
+    "kind": "quiz",
+    "prompt": "How many patients have a biobank sample and at least one LDL-C result (LOINC 13457-7 or 18262-6) of 190 mg/dL or more?"
+  },
+  {
+    "id": "E11.1a",
+    "session": 3,
+    "kind": "exercise",
+    "prompt": "How many biobank samples are there?"
+  },
+  {
+    "id": "E11.1b",
+    "session": 3,
+    "kind": "exercise",
+    "prompt": "How many genotyped samples are there?"
+  },
+  {
+    "id": "E11.2a",
+    "session": 3,
+    "kind": "exercise",
+    "prompt": "How many biobank samples belong to a patient with patient information?"
+  },
+  {
+    "id": "E11.2b",
+    "session": 3,
+    "kind": "exercise",
+    "prompt": "How many genotyped samples belong to a patient with patient information?"
+  },
+  {
+    "id": "E11.4",
+    "session": 3,
+    "kind": "exercise",
+    "prompt": "How many biobank samples belong to patients who also have a genotyped sample?"
+  },
+  {
+    "id": "E11.5",
+    "session": 3,
+    "kind": "exercise",
+    "prompt": "How many genotyped samples come from patients with coronary artery disease (ICD-10-CM I25.10)?"
+  }
+]

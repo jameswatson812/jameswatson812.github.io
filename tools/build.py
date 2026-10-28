@@ -16,13 +16,15 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 CONTENT = ROOT / "tools" / "content"
 META = ROOT / "fish-genomics" / "fst-101snp" / "meta.json"
 SITE_NAME = "Lingyu Zhan"
-NAV = [("Home", ""), ("Research", "research/"), ("Publications", "publications/"),
+NAV = [("Home", ""), ("Research", "research/"), ("Publications", "publications/"), ("Teaching", "teaching/"),
        ("Fish genomics", "fish-genomics/"), ("Human genomics", "human-genomics/")]
 # output path, nav key, <title>, description, content file, depth below the root
 PAGES = [
     ("index.html", "Home", SITE_NAME, "Lingyu Zhan, statistical geneticist, Ophoff Lab, UCLA.", "home.html", 0),
     ("research/index.html", "Research", "Research", "Research interests and projects.", "research.html", 1),
     ("publications/index.html", "Publications", "Publications", "Selected publications.", "publications.html", 1),
+    ("teaching/index.html", "Teaching", "Teaching", "Teaching materials and practice databases.", "teaching.html", 1),
+    # teaching/w33/ (the practice database) is hand-maintained, like human-genomics/, and is NOT generated here
     ("fish-genomics/index.html", "Fish genomics", "Fish genomics",
      "Population genomics of the tidewater goby: interactive genome-wide and pairwise F_ST scans in 101-SNP windows.", "fish-genomics.html", 1),
     ("fish-genomics/heterozygosity/index.html", "Fish genomics", "Heterozygosity",

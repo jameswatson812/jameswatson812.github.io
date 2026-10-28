@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>W33 practice database · Teaching · Lingyu Zhan</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Practice database for the W33 workshop: SQL in the browser on synthetic patients.">
+<link rel="stylesheet" href="../../assets/site.css">
+<style>
+  main.wrap { max-width: 1480px; }
+  .banner { display: inline-block; margin: 0 0 14px; padding: 4px 12px; border-radius: 999px; font-size: .92rem;
+    font-weight: 600; background: #fff4e5; color: #8a4b00; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .banner { background: #3a2a10; color: #ffcf8a; } }
+  .gate { max-width: 36rem; margin-top: 8px; }
+  .gate form { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 8px; }
+  input[type=text], .answer input { font: inherit; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--line);
+    background: var(--bg); color: var(--fg); }
+  .gate input { flex: 1 1 16rem; }
+  button { font: inherit; padding: 7px 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--card);
+    color: var(--fg); cursor: pointer; }
+  button.primary, .gate button { background: var(--accent); border-color: var(--accent); color: #fff; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button.primary,
+    :root:not([data-theme="light"]) .gate button { color: var(--bg); } }
+  button:disabled { opacity: .6; cursor: progress; }
+  .err, .sqlerr, .verdict.no { color: #c62828; }
+  .verdict.ok { color: #1b7f3b; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .err, :root:not([data-theme="light"]) .sqlerr,
+    :root:not([data-theme="light"]) .verdict.no { color: #ff8a80; }
+    :root:not([data-theme="light"]) .verdict.ok { color: #7ee2a0; } }
+  .err { min-height: 1.4em; margin: 4px 0 0; }
+  .bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin: 0 0 14px; }
+  .work { display: grid; grid-template-columns: 250px minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
+  @media (max-width: 1180px) { .work { grid-template-columns: 230px minmax(0, 1fr); } .answers { grid-column: 1 / -1; } }
+  @media (max-width: 760px) { .work { grid-template-columns: 1fr; } }
+  .work h2 { font-size: 1rem; margin: 0 0 8px; }
+  .mono, .tables summary, .tables .cname, textarea, .grid table, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .tables details { border-bottom: 1px solid var(--line); padding: 5px 0; }
+  .tables summary { cursor: pointer; font-weight: 600; font-size: .9rem; }
+  .tables .tdesc { color: var(--muted); font-size: .84rem; margin: 4px 0; }
+  .tables table { font-size: .78rem; border-collapse: collapse; width: 100%; }
+  .tables td { padding: 3px 4px; vertical-align: top; border-top: 1px solid var(--line); }
+  .tables .cname { white-space: nowrap; }
+  .tables .ctype { color: var(--muted); }
+  textarea { width: 100%; min-height: 210px; font-size: 14px; line-height: 1.45; padding: 10px 12px; border: 1px solid var(--line);
+    border-radius: 8px; background: var(--bg); color: var(--fg); resize: vertical; tab-size: 4; }
+  .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 8px 0 12px; }
+  .toolbar label { color: var(--muted); font-size: .92rem; }
+  .meta { color: var(--muted); font-size: .88rem; margin: 4px 0; }
+  .result { margin: 8px 0 16px; }
+  .grid { overflow: auto; max-height: 460px; border: 1px solid var(--line); border-radius: 8px; }
+  .grid table { border-collapse: collapse; font-size: .82rem; }
+  .grid th, .grid td { padding: 4px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; text-align: left; }
+  .grid th { position: sticky; top: 0; background: var(--card); }
+  .grid td.num { text-align: right; }
+  .grid td.null { color: var(--muted); font-style: italic; }
+  pre.translated { background: var(--card); padding: 10px 12px; border-radius: 8px; overflow: auto; font-size: .8rem; }
+  .notes { font-size: .85rem; color: var(--muted); }
+  .answers-tabs { display: flex; gap: 6px; margin: 0 0 10px; }
+  .answers-tabs button { border-radius: 999px; padding: 5px 14px; color: var(--muted); }
+  .answers-tabs button[aria-selected="true"] { color: var(--fg); border-color: var(--accent); font-weight: 600; }
+  .answers fieldset { border: 0; padding: 0; margin: 4px 0 6px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .answers legend { color: var(--muted); font-size: .88rem; padding: 0; margin-bottom: 4px; }
+  .items { list-style: none; padding: 0; margin: 0; max-width: none; }
+  .item { padding: 8px 0 10px; border-bottom: 1px solid var(--line); margin: 0; }
+  .item p { margin: 0 0 6px; font-size: .92rem; }
+  .item .id { font-weight: 600; margin-right: 4px; }
+  .answer { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .answer input { width: 8.5rem; padding: 6px 10px; }
+  .answer button.confirm { background: #b3261e; border-color: #b3261e; color: #fff; }
+  .verdict { font-size: .9rem; font-weight: 600; }
+  .score { font-weight: 600; }
+</style>
+</head>
+<body>
+<header class="site"><div class="wrap">
+  <a class="brand" href="../../">Lingyu Zhan</a>
+  <nav class="tabs" aria-label="Site">
+    <a href="../../">Home</a>
+    <a href="../../research/">Research</a>
+    <a href="../../publications/">Publications</a>
+    <a href="../../teaching/" aria-current="page">Teaching</a>
+    <a href="../../fish-genomics/">Fish genomics</a>
+    <a href="../../human-genomics/">Human genomics</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<p class="banner">Practice database: synthetic data, not real patients</p>
+<h1>W33 practice database</h1>
+
+<section id="signin" class="gate">
+  <p class="lede">SQL practice for the W33 workshop, on an invented health system with the DDR's structure and shorter
+    table names. It runs in your browser: nothing to install.</p>
+  <form id="signin-form" autocomplete="off">
+    <label for="signin-user" class="small" style="flex-basis:100%">Mednet username: the part of your Mednet email before the @</label>
+    <input id="signin-user" type="text" autocapitalize="none" autocorrect="off" spellcheck="false" autofocus required>
+    <button id="signin-btn" type="submit">Sign in</button>
+  </form>
+  <p class="err" id="signin-err" role="alert" aria-live="polite"></p>
+  <p class="small" id="signin-status" aria-live="polite"></p>
+  <p class="small">The database downloads once (about 10 MB) and is decrypted in your browser. Your sign-in is
+    remembered for this browser tab only.</p>
+</section>
+
+<section id="app" hidden>
+  <div class="bar">
+    <p class="small">Signed in as <strong class="mono" id="who"></strong>. On this database GETDATE() is always
+      31 October 2026, 4:00 PM, and dates are not shifted.</p>
+    <button id="signout" type="button">Sign out</button>
+  </div>
+  <div class="work">
+    <aside class="tables-pane">
+      <h2>Tables</h2>
+      <div class="tables" id="tables"></div>
+    </aside>
+    <section class="editor-pane" aria-label="SQL editor and results">
+      <label for="sql" class="small">T-SQL, as in SSMS. Select part of the text to run only that part.</label>
+      <textarea id="sql" spellcheck="false" autocomplete="off" autocapitalize="none"></textarea>
+      <div class="toolbar">
+        <button id="run" class="primary" type="button">Run</button>
+        <button id="stop" type="button" hidden>Stop</button>
+        <button id="reset" type="button">Reset database</button>
+        <label><input type="checkbox" id="show-sql"> Show the translated SQL</label>
+        <span class="meta" id="run-status" aria-live="polite"></span>
+      </div>
+      <div id="results" aria-live="polite"></div>
+    </section>
+    <section class="answers" aria-label="Check your answers">
+      <h2>Check your answers</h2>
+      <div class="answers-tabs" role="tablist">
+        <button type="button" role="tab" aria-selected="true" data-panel="exercises">Exercises</button>
+        <button type="button" role="tab" aria-selected="false" data-panel="quiz">Quiz</button>
+      </div>
+      <div id="panel-exercises">
+        <p class="meta">Unlimited checks. Run your query, then type the number it returns.</p>
+        <div class="toolbar">
+          <label for="ex-session">Session</label>
+          <select id="ex-session"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+        </div>
+        <fieldset><legend>Answering from</legend>
+          <label><input type="radio" name="ex-version" value="practice" checked> the practice database</label>
+          <label><input type="radio" name="ex-version" value="ddr"> the DDR</label>
+        </fieldset>
+        <p class="small">With DDR access you can run the same query on the DDR (real names: see the handout) and check
+          that number instead.</p>
+        <ul class="items" id="ex-list"></ul>
+      </div>
+      <div id="panel-quiz" hidden>
+        <div id="quiz-body"></div>
+      </div>
+    </section>
+  </div>
+</section>
+</main>
+<footer class="site"><div class="wrap">&copy; 2026 Lingyu Zhan &middot; <a href="https://github.com/jameswatson812/jameswatson812.github.io">Site source</a></div></footer>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

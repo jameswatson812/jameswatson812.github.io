@@ -1,0 +1,549 @@
+{
+ "tables": [
+  {
+   "name": "PatientDim",
+   "desc": "Patients: one row per patient",
+   "columns": [
+    {
+     "name": "PatientID",
+     "type": "INTEGER",
+     "desc": "Patient identifier, shared by every fact table"
+    },
+    {
+     "name": "Sex",
+     "type": "TEXT",
+     "desc": "'Female' or 'Male'"
+    },
+    {
+     "name": "BirthDate",
+     "type": "TEXT",
+     "desc": "Date of birth"
+    },
+    {
+     "name": "DeathDate",
+     "type": "TEXT",
+     "desc": "Date of death; NULL if not recorded as deceased"
+    },
+    {
+     "name": "PreferredLanguage",
+     "type": "TEXT",
+     "desc": "Preferred language; NULL if not recorded"
+    },
+    {
+     "name": "Ethnicity",
+     "type": "TEXT",
+     "desc": "Ethnicity as recorded"
+    },
+    {
+     "name": "FirstRace",
+     "type": "TEXT",
+     "desc": "First race recorded"
+    },
+    {
+     "name": "SmokingStatus",
+     "type": "TEXT",
+     "desc": "Smoking status as recorded"
+    },
+    {
+     "name": "IsCurrent",
+     "type": "INTEGER",
+     "desc": "1 for the current version of the patient's record"
+    }
+   ]
+  },
+  {
+   "name": "DepartmentDim",
+   "desc": "Departments and their locations; a department with rooms has one row per room",
+   "columns": [
+    {
+     "name": "DepartmentID",
+     "type": "INTEGER",
+     "desc": "Department identifier; repeats when a department has several rooms"
+    },
+    {
+     "name": "DepartmentName",
+     "type": "TEXT",
+     "desc": "Internal department name"
+    },
+    {
+     "name": "DeptExternalName",
+     "type": "TEXT",
+     "desc": "Department name shown to patients"
+    },
+    {
+     "name": "LocationName",
+     "type": "TEXT",
+     "desc": "Hospital or clinic the department belongs to"
+    },
+    {
+     "name": "RoomName",
+     "type": "TEXT",
+     "desc": "Room; NULL for departments listed without rooms"
+    }
+   ]
+  },
+  {
+   "name": "CategoryDim",
+   "desc": "Code lists: decode a coded column through CategoryName and CodeValue",
+   "columns": [
+    {
+     "name": "CategoryName",
+     "type": "TEXT",
+     "desc": "Name of the code list, e.g. 'DischargeDisposition'"
+    },
+    {
+     "name": "CodeValue",
+     "type": "INTEGER",
+     "desc": "The code as stored in the fact tables"
+    },
+    {
+     "name": "CodeName",
+     "type": "TEXT",
+     "desc": "What the code means"
+    }
+   ]
+  },
+  {
+   "name": "DiagnosisCodeDim",
+   "desc": "Diagnosis codes: an ICD-10-CM and an ICD-9-CM row for each DiagnosisID",
+   "columns": [
+    {
+     "name": "DiagnosisID",
+     "type": "INTEGER",
+     "desc": "Diagnosis identifier; each one has an ICD-10-CM and an ICD-9-CM row"
+    },
+    {
+     "name": "CodeType",
+     "type": "TEXT",
+     "desc": "'ICD-10-CM' or 'ICD-9-CM'"
+    },
+    {
+     "name": "DiagnosisCode",
+     "type": "TEXT",
+     "desc": "The ICD code, e.g. 'E11.9'"
+    },
+    {
+     "name": "DiagnosisName",
+     "type": "TEXT",
+     "desc": "Diagnosis description"
+    }
+   ]
+  },
+  {
+   "name": "LabComponentDim",
+   "desc": "Lab components: what a lab result measures",
+   "columns": [
+    {
+     "name": "LabCompID",
+     "type": "INTEGER",
+     "desc": "Lab component identifier; joins to LabResultFact.ComponentID"
+    },
+    {
+     "name": "ComponentName",
+     "type": "TEXT",
+     "desc": "Component name used by the performing lab"
+    },
+    {
+     "name": "BaseName",
+     "type": "TEXT",
+     "desc": "Short name shared by components that measure the same thing"
+    },
+    {
+     "name": "CommonName",
+     "type": "TEXT",
+     "desc": "Common name, e.g. 'LDL cholesterol'"
+    },
+    {
+     "name": "LoincCode",
+     "type": "TEXT",
+     "desc": "LOINC code; NULL for some point-of-care components"
+    },
+    {
+     "name": "LoincName",
+     "type": "TEXT",
+     "desc": "LOINC name"
+    },
+    {
+     "name": "DefaultUnit",
+     "type": "TEXT",
+     "desc": "Usual unit of the result"
+    }
+   ]
+  },
+  {
+   "name": "MedicationDim",
+   "desc": "Medications",
+   "columns": [
+    {
+     "name": "MedicationID",
+     "type": "INTEGER",
+     "desc": "Medication identifier"
+    },
+    {
+     "name": "MedicationName",
+     "type": "TEXT",
+     "desc": "Product name, e.g. 'ATORVASTATIN 20 MG TABLET'"
+    },
+    {
+     "name": "SimpleGenericName",
+     "type": "TEXT",
+     "desc": "Generic name, e.g. 'atorvastatin'"
+    },
+    {
+     "name": "PharmClass",
+     "type": "TEXT",
+     "desc": "Pharmaceutical class"
+    }
+   ]
+  },
+  {
+   "name": "EncounterFact",
+   "desc": "Encounters: one row per visit or stay",
+   "columns": [
+    {
+     "name": "EncounterCSN",
+     "type": "INTEGER",
+     "desc": "Encounter identifier"
+    },
+    {
+     "name": "PatientID",
+     "type": "INTEGER",
+     "desc": "Patient; joins to PatientDim.PatientID"
+    },
+    {
+     "name": "ContactDate",
+     "type": "TEXT",
+     "desc": "Date and time of the encounter"
+    },
+    {
+     "name": "PatientAge",
+     "type": "INTEGER",
+     "desc": "Age in whole years at the encounter"
+    },
+    {
+     "name": "EncounterTypeCode",
+     "type": "INTEGER",
+     "desc": "Encounter type; decode through CategoryDim, list 'EncounterType'"
+    },
+    {
+     "name": "DepartmentID",
+     "type": "INTEGER",
+     "desc": "Department; joins to DepartmentDim.DepartmentID"
+    },
+    {
+     "name": "CheckinTime",
+     "type": "TEXT",
+     "desc": "Check-in time; NULL if not recorded"
+    },
+    {
+     "name": "CheckoutTime",
+     "type": "TEXT",
+     "desc": "Check-out time; NULL if not recorded"
+    },
+    {
+     "name": "DischargeCode",
+     "type": "INTEGER",
+     "desc": "Discharge disposition; decode through CategoryDim, list 'DischargeDisposition'"
+    },
+    {
+     "name": "IsInpatient",
+     "type": "INTEGER",
+     "desc": "1 for an inpatient stay"
+    },
+    {
+     "name": "IsEDVisit",
+     "type": "INTEGER",
+     "desc": "1 for an emergency department visit"
+    },
+    {
+     "name": "LengthOfStay",
+     "type": "REAL",
+     "desc": "Length of an inpatient stay in days; NULL otherwise"
+    },
+    {
+     "name": "ICUDays",
+     "type": "REAL",
+     "desc": "Days in intensive care"
+    },
+    {
+     "name": "PatientHeight",
+     "type": "TEXT",
+     "desc": "Height as entered, in feet and inches (text)"
+    },
+    {
+     "name": "PatientWeight",
+     "type": "REAL",
+     "desc": "Weight in ounces however it was entered; divide by 16 for pounds"
+    },
+    {
+     "name": "PatientBMI",
+     "type": "REAL",
+     "desc": "Body mass index, kg/m2"
+    }
+   ]
+  },
+  {
+   "name": "DiagnosisFact",
+   "desc": "Diagnoses from encounters, the problem list, medical history and billing",
+   "columns": [
+    {
+     "name": "DiagnosisEventType",
+     "type": "TEXT",
+     "desc": "Source: 'EncounterDx', 'ProblemList', 'MedicalHistory' or 'BillingDx'"
+    },
+    {
+     "name": "PatientID",
+     "type": "INTEGER",
+     "desc": "Patient; joins to PatientDim.PatientID"
+    },
+    {
+     "name": "EncounterCSN",
+     "type": "INTEGER",
+     "desc": "Encounter; joins to EncounterFact.EncounterCSN; NULL for problem-list and history entries"
+    },
+    {
+     "name": "DiagnosisID",
+     "type": "INTEGER",
+     "desc": "Diagnosis; joins to DiagnosisCodeDim.DiagnosisID"
+    },
+    {
+     "name": "StartDate",
+     "type": "TEXT",
+     "desc": "Date the diagnosis was recorded or began"
+    }
+   ]
+  },
+  {
+   "name": "LabOrderFact",
+   "desc": "Lab orders: one row per order",
+   "columns": [
+    {
+     "name": "OrderID",
+     "type": "INTEGER",
+     "desc": "Lab order identifier"
+    },
+    {
+     "name": "EncounterCSN",
+     "type": "INTEGER",
+     "desc": "Encounter; joins to EncounterFact.EncounterCSN"
+    },
+    {
+     "name": "PatientID",
+     "type": "INTEGER",
+     "desc": "Patient; joins to PatientDim.PatientID"
+    },
+    {
+     "name": "OrderDeptID",
+     "type": "INTEGER",
+     "desc": "Patient's department when ordered; joins to DepartmentDim.DepartmentID"
+    },
+    {
+     "name": "OrderDescription",
+     "type": "TEXT",
+     "desc": "What was ordered, e.g. 'LIPID PANEL'"
+    },
+    {
+     "name": "LabStatusCode",
+     "type": "INTEGER",
+     "desc": "Order status; decode through CategoryDim, list 'LabStatus'"
+    },
+    {
+     "name": "OrderDateTime",
+     "type": "TEXT",
+     "desc": "Date and time of the order"
+    },
+    {
+     "name": "OrderDate",
+     "type": "TEXT",
+     "desc": "Date of the order, at midnight"
+    }
+   ]
+  },
+  {
+   "name": "LabResultFact",
+   "desc": "Lab results: one row per measured component of an order",
+   "columns": [
+    {
+     "name": "OrderID",
+     "type": "INTEGER",
+     "desc": "Lab order; joins to LabOrderFact.OrderID"
+    },
+    {
+     "name": "PatientID",
+     "type": "INTEGER",
+     "desc": "Patient; joins to PatientDim.PatientID"
+    },
+    {
+     "name": "EncounterCSN",
+     "type": "INTEGER",
+     "desc": "Encounter; joins to EncounterFact.EncounterCSN"
+    },
+    {
+     "name": "ComponentID",
+     "type": "INTEGER",
+     "desc": "What was measured; joins to LabComponentDim.LabCompID"
+    },
+    {
+     "name": "ResultDateTime",
+     "type": "TEXT",
+     "desc": "Date and time of the result"
+    },
+    {
+     "name": "ResultNumber",
+     "type": "REAL",
+     "desc": "Numeric result; NULL for text results"
+    },
+    {
+     "name": "ResultText",
+     "type": "TEXT",
+     "desc": "Result as text, e.g. 'Detected'"
+    },
+    {
+     "name": "Unit",
+     "type": "TEXT",
+     "desc": "Unit of the result"
+    }
+   ]
+  },
+  {
+   "name": "MedOrderFact",
+   "desc": "Medication orders: one row per order",
+   "columns": [
+    {
+     "name": "MedOrderID",
+     "type": "INTEGER",
+     "desc": "Medication order identifier"
+    },
+    {
+     "name": "EncounterCSN",
+     "type": "INTEGER",
+     "desc": "Encounter; joins to EncounterFact.EncounterCSN"
+    },
+    {
+     "name": "PatientID",
+     "type": "INTEGER",
+     "desc": "Patient; joins to PatientDim.PatientID"
+    },
+    {
+     "name": "MedicationID",
+     "type": "INTEGER",
+     "desc": "Medication; joins to MedicationDim.MedicationID"
+    },
+    {
+     "name": "OrderDateTime",
+     "type": "TEXT",
+     "desc": "Date and time of the order"
+    }
+   ]
+  },
+  {
+   "name": "FlowsheetFact",
+   "desc": "Vital signs and other flowsheet entries: one row per recorded value",
+   "columns": [
+    {
+     "name": "PatientID",
+     "type": "INTEGER",
+     "desc": "Patient; joins to PatientDim.PatientID"
+    },
+    {
+     "name": "EncounterCSN",
+     "type": "INTEGER",
+     "desc": "Encounter; joins to EncounterFact.EncounterCSN"
+    },
+    {
+     "name": "RowName",
+     "type": "TEXT",
+     "desc": "What was measured, e.g. 'MEAN ARTERIAL PRESSURE'"
+    },
+    {
+     "name": "Value",
+     "type": "TEXT",
+     "desc": "The recorded value, stored as text"
+    },
+    {
+     "name": "RecordedTime",
+     "type": "TEXT",
+     "desc": "When the value was recorded"
+    }
+   ]
+  },
+  {
+   "name": "BiobankMap",
+   "desc": "Biobank samples and the patient each came from",
+   "columns": [
+    {
+     "name": "PatientID",
+     "type": "INTEGER",
+     "desc": "Patient; joins to PatientDim.PatientID"
+    },
+    {
+     "name": "SampleID",
+     "type": "TEXT",
+     "desc": "Biobank sample identifier"
+    },
+    {
+     "name": "CollectionDate",
+     "type": "TEXT",
+     "desc": "Date the sample was collected"
+    }
+   ]
+  },
+  {
+   "name": "AtlasSampleQC",
+   "desc": "Genotyped samples and their quality-control results",
+   "columns": [
+    {
+     "name": "GenotypeID",
+     "type": "TEXT",
+     "desc": "Genotyped sample identifier"
+    },
+    {
+     "name": "PatientID",
+     "type": "INTEGER",
+     "desc": "Patient; joins to PatientDim.PatientID"
+    },
+    {
+     "name": "SexMatch",
+     "type": "INTEGER",
+     "desc": "1 if the recorded sex matches the sex inferred from the genotypes, else 0"
+    },
+    {
+     "name": "MissingRate",
+     "type": "INTEGER",
+     "desc": "1 if the sample's missing-genotype rate is above 5%, else 0 (a flag, not a rate)"
+    },
+    {
+     "name": "IsExcluded",
+     "type": "INTEGER",
+     "desc": "1 if the sample is on the exclusion list, else 0"
+    }
+   ]
+  },
+  {
+   "name": "AtlasSnpQC",
+   "desc": "Genotyped SNPs and their quality-control results",
+   "columns": [
+    {
+     "name": "RSID",
+     "type": "TEXT",
+     "desc": "SNP identifier (rsID)"
+    },
+    {
+     "name": "Chromosome",
+     "type": "INTEGER",
+     "desc": "Chromosome number"
+    },
+    {
+     "name": "Position",
+     "type": "INTEGER",
+     "desc": "Base-pair position, GRCh37"
+    },
+    {
+     "name": "HWEPValue",
+     "type": "REAL",
+     "desc": "Hardy-Weinberg equilibrium test p-value"
+    }
+   ]
+  }
+ ]
+}
