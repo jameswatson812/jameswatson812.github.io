@@ -2,7 +2,9 @@
 import { createApi } from './api.js';
 import { ENDPOINT, SESSIONS, TODAY } from './config.js';
 import { decryptDatabase, normalizeUsername, unwrapKey } from './gate.js';
+import { esc } from './html.js';
 import { friendlyError } from './messages.js';
+import { MAYBE_RECORDED, PLACE, answeredText, confirmText, quizHtml, quizVersion } from './quizview.js';
 
 const STORE = 'w33-user';
 const TIMEOUT_MS = 20000;
@@ -17,7 +19,6 @@ const params = new URLSearchParams(location.search);
 const onThisComputer = ['localhost', '127.0.0.1'].includes(location.hostname);
 // For local testing only, ?api=<url> points the checks at a stand-in grader.
 const api = createApi({ endpoint: (onThisComputer && params.get('api')) || ENDPOINT });
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const WHOLE = /^\d+(\.0+)?$/; // the grader's rule, so an obvious typo is caught before it is sent
 
 let user = null;
@@ -28,7 +29,9 @@ const waiting = new Map();
 let running = false;
 let stopMessage = STOPPED;
 let items = [];
-let quiz = { quiz: {}, versions: {} };
+let quiz = { quiz: {}, versions: {} }; // answers the grader recorded, and each quiz's fixed version
+let picked = {}; // the version chosen for each session's quiz before its first answer
+let drafts = {}; // answers typed but not yet submitted, kept across re-renders
 
 // ------------------------------------------------------------------ worker
 function call(msg, transfer = []) {
@@ -126,6 +129,9 @@ function signOut() {
   worker = null;
   dbBytes = null;
   user = null;
+  quiz = { quiz: {}, versions: {} };
+  picked = {};
+  drafts = {};
   $('app').hidden = true;
   $('signin').hidden = false;
   setStatus('');
@@ -204,6 +210,7 @@ async function runQuery() {
   } else if (reply.type === 'error') {
     renderResults(reply.partial, friendlyError(reply.error));
     $('run-status').textContent = `${secs} s`;
+    if (/out of memory/i.test(reply.error.message || '')) await restartWorker(''); // give the memory back
   } else {
     renderResults(reply.out, null);
     $('run-status').textContent = `${secs} s`;
@@ -223,7 +230,6 @@ async function resetDatabase() {
 
 // ---------------------------------------------------------------- answers
 const versionOf = (name) => document.querySelector(`input[name="${name}"]:checked`).value;
-const label = (v) => (v === 'ddr' ? 'DDR' : 'practice database');
 
 function itemRow(it, title, kind) {
   return `<li class="item" data-id="${esc(it.id)}"><p><span class="id">${esc(title)}</span> ${esc(it.prompt)}</p>` +
@@ -281,29 +287,11 @@ function renderQuiz() {
       'Wed 4 and Thu 5 November. Five questions, one try each; your score appears as you answer.</p>';
     return;
   }
-  const chosen = quiz.versions[String(s.session)];
-  const qs = items.filter((it) => it.kind === 'quiz' && it.session === s.session);
-  const done = qs.filter((it) => quiz.quiz[it.id]);
-  const right = done.filter((it) => quiz.quiz[it.id].correct).length;
-  box.innerHTML = `<p class="meta">Session ${s.session} quiz, open until 12:15 PM Pacific. One try per question: your first answer counts.</p>` +
-    `<fieldset class="versions"${chosen ? ' disabled' : ''}><legend>Answer on</legend>` +
-    ['practice', 'ddr'].map((v) => `<label><input type="radio" name="quiz-version" value="${v}"${(chosen || 'practice') === v ? ' checked' : ''}> ${label(v)}</label>`).join(' ') +
-    `</fieldset><p class="small">${chosen ? `This quiz is on the ${label(chosen)}, chosen with your first answer.` : 'Your first answer fixes the version for this quiz.'}</p>` +
-    `<ol class="items">${qs.map((it, i) => itemRow(it, `Question ${i + 1}.`, 'quiz')).join('')}</ol>` +
-    `<p class="score">${done.length ? `Score: ${right} of ${done.length} answered correctly${done.length === qs.length ? ' (final)' : ''}` : ''}</p>`;
-  for (const it of done) showQuizAnswer(it.id, quiz.quiz[it.id]);
+  const questions = items.filter((it) => it.kind === 'quiz' && it.session === s.session);
+  box.innerHTML = quizHtml({ session: s.session, questions, quiz, picked, drafts });
 }
 
-function showQuizAnswer(id, r) {
-  const form = document.querySelector(`#quiz-body li[data-id="${CSS.escape(id)}"] form`);
-  if (!form) return;
-  const input = form.querySelector('input');
-  input.value = r.answer;
-  input.disabled = true;
-  form.querySelector('button[type=submit]').hidden = true;
-  form.querySelector('.cancel').hidden = true;
-  setVerdict(form, r.correct ? 'Correct' : 'Not correct', r.correct ? 'ok' : 'no');
-}
+const quizForm = (id) => document.querySelector(`#quiz-body li[data-id="${CSS.escape(id)}"] form`);
 
 async function refreshQuiz() {
   if (!quizSession()) return renderQuiz();
@@ -325,39 +313,49 @@ const QUIZ_MESSAGES = {
 };
 
 async function submitQuiz(form, id) {
+  const s = quizSession();
+  const version = s && quizVersion(s.session, quiz, picked);
+  const input = form.querySelector('input');
   const btn = form.querySelector('button[type=submit]');
   const cancel = form.querySelector('.cancel');
-  const answer = form.querySelector('input').value;
-  if (!WHOLE.test(answer.replace(/[\s,]/g, ''))) return setVerdict(form, QUIZ_MESSAGES.invalid, 'no');
-  if (!btn.classList.contains('confirm')) { // the first click asks; the second sends
+  if (!version) return setVerdict(form, 'First choose above whether you answer from the DDR or the practice database.', 'no');
+  if (!WHOLE.test(input.value.replace(/[\s,]/g, ''))) return setVerdict(form, QUIZ_MESSAGES.invalid, 'no');
+  if (!btn.classList.contains('confirm')) { // the first click asks, naming the version; the second sends
     btn.classList.add('confirm');
     btn.textContent = 'Submit final answer';
     cancel.hidden = false;
-    return setVerdict(form, 'One try: this answer will be final.');
+    return setVerdict(form, confirmText(version));
   }
+  input.disabled = true; // from here the answer may be recorded: it is not edited any more
   btn.disabled = true;
+  cancel.hidden = true;
   setVerdict(form, 'Sending…');
+  let r;
   try {
-    const r = await api.post({ action: 'quiz', username: user, version: versionOf('quiz-version'), itemId: id, answer });
-    if (r.status === 'recorded' || r.status === 'already') {
-      quiz.quiz[id] = { answer: r.answer, correct: r.correct, version: versionOf('quiz-version') };
-      quiz.versions[id.slice(1, id.indexOf('.'))] = quiz.versions[id.slice(1, id.indexOf('.'))] || versionOf('quiz-version');
-      return renderQuiz();
-    }
-    if (r.status === 'version-locked') {
-      quiz.versions[id.slice(1, id.indexOf('.'))] = r.version;
-      renderQuiz();
-      return setVerdict(document.querySelector(`#quiz-body li[data-id="${CSS.escape(id)}"] form`),
-        `This quiz is on the ${label(r.version)}: answer there. Nothing was recorded.`, 'no');
-    }
-    resetConfirm(form);
-    return setVerdict(form, QUIZ_MESSAGES[r.status] || 'Not recorded: try again.', 'no');
-  } catch (e) {
-    resetConfirm(form);
-    return setVerdict(form, `${e.message} Nothing was recorded yet.`, 'no');
-  } finally {
-    btn.disabled = false;
+    r = await api.post({ action: 'quiz', username: user, version, itemId: id, answer: input.value });
+  } catch {
+    btn.disabled = false; // still confirming: one more click sends the same answer, and the grader keeps the first
+    return setVerdict(form, MAYBE_RECORDED, 'no');
   }
+  const key = String(s.session);
+  if (r.status === 'recorded' || r.status === 'already') {
+    quiz.quiz[id] = { answer: r.answer, correct: r.correct, version };
+    if (!quiz.versions[key]) quiz.versions[key] = version;
+    delete drafts[id];
+    renderQuiz();
+    const f = quizForm(id);
+    return f && setVerdict(f, answeredText(r, r.status), r.correct ? 'ok' : 'no');
+  }
+  if (r.status === 'version-locked') {
+    quiz.versions[key] = r.version;
+    renderQuiz();
+    const f = quizForm(id);
+    return f && setVerdict(f, `This quiz is on ${PLACE[r.version]}: answer from there. Nothing was recorded.`, 'no');
+  }
+  input.disabled = false;
+  btn.disabled = false;
+  resetConfirm(form);
+  return setVerdict(form, QUIZ_MESSAGES[r.status] || 'Not recorded: try again.', 'no');
 }
 
 function resetConfirm(form) {
@@ -395,6 +393,16 @@ document.addEventListener('submit', (ev) => {
   const id = form.closest('li').dataset.id;
   if (form.dataset.kind === 'quiz') submitQuiz(form, id);
   else check(form, id);
+});
+document.addEventListener('change', (ev) => {
+  const s = quizSession();
+  if (ev.target.name !== 'quiz-version' || !s) return;
+  picked[String(s.session)] = ev.target.value;
+  renderQuiz();
+});
+document.addEventListener('input', (ev) => {
+  const li = ev.target.closest('#quiz-body li[data-id]');
+  if (li) drafts[li.dataset.id] = ev.target.value;
 });
 document.addEventListener('click', (ev) => {
   if (!ev.target.classList.contains('cancel')) return;

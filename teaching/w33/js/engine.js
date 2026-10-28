@@ -5,6 +5,27 @@ import { translate } from './tsql.js';
 import { registerUdfs } from './udf.js';
 
 const HELPER = '__w33_'; // columns the translator adds; never shown
+const MADE_TABLE = /^CREATE\s+(TEMP\s+)?TABLE\s+("(?:[^"]|"")+"|[\w$]+)\s+AS\s/i;
+
+// CREATE TABLE ... AS SELECT (how SELECT ... INTO runs here) gives each new column SQLite's case-sensitive
+// default collation. SQL Server compares text without case everywhere, so the new table is rebuilt with
+// its text and untyped columns COLLATE NOCASE.
+function keepNocase(db, name, temp) {
+  const schema = temp ? 'temp' : 'main';
+  const info = db.exec(`PRAGMA ${schema}.table_info(${name})`);
+  const cols = info.length ? info[0].values : [];
+  const isText = (type) => type === '' || /CHAR|CLOB|TEXT/i.test(type);
+  if (!cols.some(([, , type]) => isText(type))) return;
+  const q = (x) => `"${String(x).replace(/"/g, '""')}"`;
+  const plain = name.startsWith('"') ? name.slice(1, -1).replace(/""/g, '"') : name;
+  const tmp = q(`${HELPER}nocase`);
+  const defs = cols.map(([, col, type]) => `${q(col)}${type ? ` ${type}` : ''}${isText(type) ? ' COLLATE NOCASE' : ''}`);
+  db.exec(`DROP TABLE IF EXISTS ${schema}.${tmp};
+    CREATE ${temp ? 'TEMP ' : ''}TABLE ${tmp} (${defs.join(', ')});
+    INSERT INTO ${schema}.${tmp} SELECT * FROM ${schema}.${name};
+    DROP TABLE ${schema}.${name};
+    ALTER TABLE ${schema}.${tmp} RENAME TO ${q(plain)};`);
+}
 
 export function createEngine(SQL, bytes, { today, maxRows = Infinity } = {}) {
   let db;
@@ -45,6 +66,8 @@ export function createEngine(SQL, bytes, { today, maxRows = Infinity } = {}) {
               stmt.free();
             }
           }
+          const made = MADE_TABLE.exec(sql);
+          if (made) keepNocase(db, made[2], Boolean(made[1]));
         }
       } catch (e) {
         out.ms = performance.now() - t0;

@@ -16,6 +16,8 @@ const RULES = [
   [/^sub-select returns \d+ columns - expected 1$/, () => 'A subquery used with IN or = must return one column.'],
   [/^no such function: (.+)$/, (m) => `${m[1]} is not available on the practice database.`],
   [/^(\w+)\(\) may not be used as a window function$/, (m) => `${m[1].toUpperCase()} ... OVER (...) is not available here.`],
+  [/out of memory/i, () => 'The query ran out of memory. A join without a matching condition can multiply rows; ' +
+    'check your ON clauses. The database was restarted and temporary tables were cleared.'],
 ];
 
 export function friendlyError(err) {
