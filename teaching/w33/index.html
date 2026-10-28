@@ -30,18 +30,29 @@
     :root:not([data-theme="light"]) .verdict.ok { color: #7ee2a0; } }
   .err { min-height: 1.4em; margin: 4px 0 0; }
   .bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin: 0 0 14px; }
-  .work { display: grid; grid-template-columns: 250px minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
-  @media (max-width: 1180px) { .work { grid-template-columns: 230px minmax(0, 1fr); } .answers { grid-column: 1 / -1; } }
-  @media (max-width: 760px) { .work { grid-template-columns: 1fr; } }
+  .work { display: grid; grid-template-columns: 250px minmax(0, 1fr) 340px; grid-template-areas: "tables editor answers";
+    gap: 20px; align-items: start; }
+  .tables-pane { grid-area: tables; }
+  .editor-pane { grid-area: editor; min-width: 0; }
+  .answers { grid-area: answers; min-width: 0; }
+  /* The side panes stay in view and scroll on their own, so an expanded table never pushes the editor or the
+     answers off screen. */
+  @media (min-width: 761px) { .tables-pane { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; } }
+  @media (min-width: 1181px) { .answers { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; } }
+  @media (max-width: 1180px) { .work { grid-template-columns: 230px minmax(0, 1fr); grid-template-areas: "tables editor" "tables answers"; } }
+  @media (max-width: 760px) { .work { grid-template-columns: minmax(0, 1fr); grid-template-areas: "tables" "editor" "answers"; } }
   .work h2 { font-size: 1rem; margin: 0 0 8px; }
   .mono, .tables summary, .tables .cname, textarea, .grid table, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
   .tables details { border-bottom: 1px solid var(--line); padding: 5px 0; }
   .tables summary { cursor: pointer; font-weight: 600; font-size: .9rem; }
+  .tables-pane { min-width: 0; }
   .tables .tdesc { color: var(--muted); font-size: .84rem; margin: 4px 0; }
-  .tables table { font-size: .78rem; border-collapse: collapse; width: 100%; }
-  .tables td { padding: 3px 4px; vertical-align: top; border-top: 1px solid var(--line); }
-  .tables .cname { white-space: nowrap; }
-  .tables .ctype { color: var(--muted); }
+  .tables dl { margin: 2px 0 0; font-size: .8rem; }
+  .tables .col { padding: 5px 0; border-top: 1px solid var(--line); }
+  .tables dt { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .tables .cname { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+  .tables .ctype { color: var(--muted); flex: none; }
+  .tables dd { margin: 2px 0 0; overflow-wrap: anywhere; }
   textarea { width: 100%; min-height: 210px; font-size: 14px; line-height: 1.45; padding: 10px 12px; border: 1px solid var(--line);
     border-radius: 8px; background: var(--bg); color: var(--fg); resize: vertical; tab-size: 4; }
   .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 8px 0 12px; }

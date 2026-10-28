@@ -156,10 +156,11 @@ async function showApp() {
   $('sql').focus();
 }
 
+// Name and type share a line and the description goes below, so a column fits the narrow pane.
 function renderTables(tables) {
   $('tables').innerHTML = tables.map((t) => `<details><summary>${esc(t.name)}</summary><p class="tdesc">${esc(t.desc)}</p>` +
-    `<table>${t.columns.map((c) => `<tr><td class="cname">${esc(c.name)}</td><td class="ctype">${esc(c.type)}</td>` +
-      `<td>${esc(c.desc)}</td></tr>`).join('')}</table></details>`).join('');
+    `<dl>${t.columns.map((c) => `<div class="col"><dt><span class="cname">${esc(c.name)}</span>` +
+      `<span class="ctype">${esc(c.type)}</span></dt><dd>${esc(c.desc)}</dd></div>`).join('')}</dl></details>`).join('');
 }
 
 function editorSql() {
