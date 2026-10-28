@@ -1,7 +1,7 @@
 // Settings for the practice page. The grading service decides what counts; these only shape the page.
 
 // The grading web app (Google Apps Script), set once it is deployed. Empty: answer checks are off.
-export const ENDPOINT = '';
+export const ENDPOINT = 'https://script.google.com/macros/s/AKfycbyHv0CwMuCLn4nu9RDs5vzB0nQvjaAbD1YBgYyAK1Hc1iHicbp1fCZSsBlha3sM1dXxug/exec';
 
 // GETDATE() on the practice database: its data end on this day.
 export const TODAY = '2026-10-31 16:00:00';
