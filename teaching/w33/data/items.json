@@ -213,7 +213,7 @@
     "id": "Q3.2",
     "session": 3,
     "kind": "quiz",
-    "prompt": "How many genotyped samples have a recorded sex that disagrees with the sex inferred from the genotypes?"
+    "prompt": "How many genotyped samples have a sex-match flag of 0, meaning the recorded and genetic sex differ or one of them is unknown?"
   },
   {
     "id": "Q3.3",
