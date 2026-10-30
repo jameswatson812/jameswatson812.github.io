@@ -63,3 +63,12 @@ summary table filled from `meta.json`, and the downloads. Only genome-wide PNGs 
 
 ## Correction 2026-10-06
 The southern species is *Eucyclogobius kristinae* (Swift et al. 2016, PLoS ONE 11:e0158543); earlier text said "E. kefauveri", a name that does not exist.
+
+## Revision 2026-10-29: Mitochondria sub-tab
+User request: publish the cohort pairwise mitochondrial-difference heatmap of NB11
+(`goby_11_mtdna_eda_R.ipynb`, section 4). The notebook's heatmap cell exports the figure itself into
+`eda_outputs_mtdna/web/` (a plotly heatmap trace over the raw counts with a square-root colour scale, saved
+with `selfcontained = FALSE` beside its `lib/`, plus the PNG, the two tables and `meta.json`); the folder is
+copied to `fish-genomics/mt/`. The page `fish-genomics/mitochondria/` (content `tools/content/fish-mt.html`,
+tokens from `mt_tokens()`) is the third Fish genomics sub-tab. The figure shows the fish of the 303 nuclear
+analysis set only, ordered by the along-coast distance of each lagoon from `coastal_distance_site.tsv`.

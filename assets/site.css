@@ -47,7 +47,9 @@ p { margin: .5rem 0 .9rem; }
 .fig-matrix { height: 600px; max-width: 760px; }
 .fig-het { height: 540px; }
 .fig-hetsub { height: 620px; }
+.fig-mt { height: 880px; max-width: 900px; }
 @media (max-width: 720px) { .fig-genome, .fig-scaf { height: 380px; } }
+@media (max-width: 720px) { .fig-mt { height: 520px; } }
 figcaption { color: var(--muted); font-size: .92rem; margin-top: 8px; max-width: 90ch; }
 .controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 12px 0; }
 select { font: inherit; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }

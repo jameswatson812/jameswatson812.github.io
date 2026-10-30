@@ -29,11 +29,15 @@ PAGES = [
      "Population genomics of the tidewater goby: interactive genome-wide and pairwise F_ST scans in 101-SNP windows.", "fish-genomics.html", 1),
     ("fish-genomics/heterozygosity/index.html", "Fish genomics", "Heterozygosity",
      "Per-sample heterozygosity of the tidewater goby by coastal unit and subunit, coloured by sampling era.", "fish-het.html", 2),
+    ("fish-genomics/mitochondria/index.html", "Fish genomics", "Mitochondria",
+     "Pairwise mitochondrial differences among tidewater goby, one row and column per fish, ordered along the coast.", "fish-mt.html", 2),
     # human-genomics/ is hand-maintained (password-gated pages added 2026-09-27) and is NOT generated here
 ]
 # sub-tabs shown on every Fish genomics page (output path prefix -> label)
-FISH_SUBNAV = [("F<sub>ST</sub> scans", "fish-genomics/"), ("Heterozygosity", "fish-genomics/heterozygosity/")]
+FISH_SUBNAV = [("F<sub>ST</sub> scans", "fish-genomics/"), ("Heterozygosity", "fish-genomics/heterozygosity/"),
+               ("Mitochondria", "fish-genomics/mitochondria/")]
 META_HET = ROOT / "fish-genomics" / "het" / "meta.json"
+META_MT = ROOT / "fish-genomics" / "mt" / "meta.json"
 PW_CLASSES = [("all", "fst-101snp-pairs", "All SNP classes"), ("replacement", "fst-101snp-pairs-replacement", "Replacement SNPs"),
               ("silent", "fst-101snp-pairs-silent", "Silent SNPs")]
 # the NB08 readout (goby_08_maruki_panels_R.ipynb, job 14746694), used only when meta.json lacks a field
@@ -152,6 +156,17 @@ def het_tokens():
             "het_n_subunits": str(m["n_subunits"]), "het_unit_rows": "\n".join(rows)}
 
 
+def mt_tokens():
+    """Tokens for the Mitochondria page from fish-genomics/mt/meta.json (written by the NB11 heatmap cell)."""
+    if not META_MT.exists():
+        print(f"WARN: {META_MT.relative_to(ROOT)} absent, mitochondria page built without numbers")
+        return {"mt_n_fish": "?", "mt_n_removed": "?", "mt_n_cohort": "?", "mt_max_diff": "?", "mt_block_rows": "", "mt_exported": "?"}
+    m = json.loads(META_MT.read_text())
+    rows = [f"    <tr><td>{b['unit']}</td><td>{b['fish']}</td></tr>" for b in m["blocks"]]
+    return {"mt_n_fish": f'{m["n_fish"]:,}', "mt_n_removed": f'{m["n_removed"]:,}', "mt_n_cohort": f'{m["n_cohort"]:,}',
+            "mt_max_diff": f'{m["max_differences"]:,}', "mt_block_rows": "\n".join(rows), "mt_exported": m.get("exported", "")}
+
+
 def fish_subnav(out):
     """The sub-tab bar for Fish genomics pages; the tab whose folder is the page's own is current."""
     depth = out.count("/")
@@ -183,7 +198,7 @@ def render(out, key, title, description, content, depth):
     body = (CONTENT / content).read_text()
     body = body.replace("{root}", root).replace("{scaffold_options}", scaffold_options())
     body = body.replace("{fish_subnav}", fish_subnav(out))
-    for token, value in {**page_numbers(), **pairwise_tokens(), **het_tokens()}.items():
+    for token, value in {**page_numbers(), **pairwise_tokens(), **het_tokens(), **mt_tokens()}.items():
         body = body.replace("{" + token + "}", value)
     page_title = title if title == SITE_NAME else f"{title} · {SITE_NAME}"
     html = TEMPLATE.format(title=page_title, description=description, root=root, site_name=SITE_NAME,

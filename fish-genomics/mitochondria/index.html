@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mitochondria · Lingyu Zhan</title>
+<meta name="description" content="Pairwise mitochondrial differences among tidewater goby, one row and column per fish, ordered along the coast.">
+<link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+<header class="site"><div class="wrap">
+  <a class="brand" href="../../">Lingyu Zhan</a>
+  <nav class="tabs" aria-label="Site">
+    <a href="../../">Home</a>
+    <a href="../../research/">Research</a>
+    <a href="../../publications/">Publications</a>
+    <a href="../../teaching/">Teaching</a>
+    <a href="../../fish-genomics/" aria-current="page">Fish genomics</a>
+    <a href="../../human-genomics/">Human genomics</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<h1>Fish genomics</h1>
+<nav class="subtabs" aria-label="Fish genomics sections"><a href="../../fish-genomics/">F<sub>ST</sub> scans</a><a href="../../fish-genomics/heterozygosity/">Heterozygosity</a><a href="../../fish-genomics/mitochondria/" aria-current="page">Mitochondria</a></nav>
+<h2 id="mt-pairwise">Pairwise mitochondrial differences among fish</h2>
+<p class="lede">The mitochondrial genome of every fish in the cohort, called jointly from the mitochondrial reads of its whole-genome library. The figure counts the differences between every pair of fish and lays them out as one row and one column per fish, ordered by the along-coast distance of each fish's lagoon from the Oregon border, so fish from neighbouring lagoons sit next to each other and the coastal units form blocks along the diagonal. Of the 323 fish with a mitochondrial consensus, the 299 that make up the nuclear analysis set are shown; the 24 fish set aside after the nuclear PCA are left out here too.</p>
+<figure class="figwrap">
+  <iframe class="fig fig-mt" src="../mt/mt_pairwise_heatmap.html" title="Pairwise mitochondrial differences among the fish of the nuclear analysis set, ordered along the coast" loading="lazy"></iframe>
+  <figcaption>Southernmost fish at left and bottom. Colour is the number of differing positions on a square-root scale, from 0 to 431; the labels along the top mark the coastal units. Hover a cell for the two fish, their lagoons and units, and the count; drag to zoom, double-click to reset. <a href="../mt/mt_pairwise_heatmap.png">Static PNG</a>.</figcaption>
+</figure>
+<div class="tablewrap"><table class="summary">
+  <thead><tr><th>Coastal unit, south to north</th><th>Fish</th></tr></thead>
+  <tbody>
+    <tr><td>South Coast</td><td>38</td></tr>
+    <tr><td>LA_Ventura</td><td>33</td></tr>
+    <tr><td>Conception</td><td>80</td></tr>
+    <tr><td>Central Coast</td><td>34</td></tr>
+    <tr><td>GBA</td><td>39</td></tr>
+    <tr><td>North Coast</td><td>75</td></tr>
+  </tbody>
+</table></div>
+<h3>How it was computed</h3>
+<ul>
+  <li><strong>Reads.</strong> The nuclear reference assembly carries no mitochondrial contig, so each fish's mitochondrial reads sit among the unmapped reads of its nuclear BAM. Those reads were aligned with minimap2 to the tidewater goby mitogenome NC_028288.1 (16,523 bp); only primary alignments were kept, duplicates were removed and reads below mapping quality 30 were dropped.</li>
+  <li><strong>Joint haploid call.</strong> <code>bcftools mpileup</code> followed by <code>bcftools call --ploidy 1</code> over all 323 fish at once, so every fish's allele depths are recorded at every position.</li>
+  <li><strong>Consensus and differences.</strong> For each fish, the called base at every position with depth 20 or more, N below that; indels are not applied, so every sequence keeps the reference frame. Pairwise differences are mismatches counted over the positions called in both fish.</li>
+  <li><strong>Fish.</strong> The nuclear analysis set of 303 fish, which excludes the fish set aside after the nuclear PCA: the Arcata Bay and Mad River Slough fish, the Virgin Creek 1988 fish, the hard-excluded San Onofre Creek fish and the two Pudding Creek 1990 fish. 299 of them have a mitochondrial consensus.</li>
+  <li><strong>Order.</strong> Each lagoon's position is its distance along the shoreline from the Oregon border, measured on the Natural Earth coastline with the project's along-coast distance tool, the same distance used for the isolation-by-distance analyses; fish from the same lagoon are ordered by sampling year.</li>
+</ul>
+<h3>Data</h3>
+<ul>
+  <li><a href="../mt/mt_pairwise_order.tsv">Fish in figure order</a> (TSV): position, sample, label, coastal unit, lagoon, year and along-coast distance in km.</li>
+  <li><a href="../mt/mt_pairwise_differences_coastal_order.tsv">Pairwise difference matrix</a> (TSV): 299 &times; 299 counts in the same order.</li>
+</ul>
+<p class="small">From <code>goby_11_mtdna_eda_R.ipynb</code>, section 4, exported 2026-10-29. Figure rendered with <a href="https://plotly.com/r/">plotly</a> for R.</p>
+</main>
+<footer class="site"><div class="wrap">&copy; 2026 Lingyu Zhan &middot; <a href="https://github.com/jameswatson812/jameswatson812.github.io">Site source</a></div></footer>
+</body>
+</html>

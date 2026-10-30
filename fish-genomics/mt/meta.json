@@ -1,0 +1,35 @@
+{
+  "n_fish": 299,
+  "n_removed": 24,
+  "n_cohort": 323,
+  "n_no_coast": 0,
+  "max_differences": 431,
+  "blocks": [
+    {
+      "unit": "South Coast",
+      "fish": 38
+    },
+    {
+      "unit": "LA_Ventura",
+      "fish": 33
+    },
+    {
+      "unit": "Conception",
+      "fish": 80
+    },
+    {
+      "unit": "Central Coast",
+      "fish": 34
+    },
+    {
+      "unit": "GBA",
+      "fish": 39
+    },
+    {
+      "unit": "North Coast",
+      "fish": 75
+    }
+  ],
+  "job": "15357015",
+  "exported": "2026-10-29"
+}
