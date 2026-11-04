@@ -22,8 +22,19 @@ export function answeredText(r, status) {
   return status === 'already' ? `${verdict}. Your first answer counts: ${r.answer}.` : verdict;
 }
 
-/** One session's quiz: version choice, questions (answered ones locked), drafts and the score. */
-export function quizHtml({ session, questions, quiz, picked, drafts }) {
+/** When a quiz closes, as the page says it: "11:59 PM Pacific on Sunday, November 8". */
+export function closeText(iso) {
+  const d = new Date(iso);
+  const tz = { timeZone: 'America/Los_Angeles' };
+  const time = d.toLocaleTimeString('en-US', { ...tz, hour: 'numeric', minute: '2-digit' });
+  return `${time} Pacific on ${d.toLocaleDateString('en-US', { ...tz, weekday: 'long', month: 'long', day: 'numeric' })}`;
+}
+
+/**
+ * One session's quiz: version choice, questions (answered ones locked), drafts and the score. Several can
+ * share the page, so each has its own radio group, named after its session.
+ */
+export function quizHtml({ session, questions, quiz, picked, drafts, close }) {
   const locked = quiz.versions[String(session)];
   const chosen = locked || picked[String(session)] || null;
   const done = questions.filter((q) => quiz.quiz[q.id]);
@@ -31,7 +42,7 @@ export function quizHtml({ session, questions, quiz, picked, drafts }) {
   const note = locked ? `This quiz is on ${PLACE[locked]}, chosen with your first answer.`
     : chosen ? `You chose ${PLACE[chosen]}. Your first answer fixes it for this quiz.`
       : 'Choose where you run your queries. Your first answer fixes it for this quiz.';
-  const radios = ['practice', 'ddr'].map((v) => `<label><input type="radio" name="quiz-version" value="${v}"` +
+  const radios = ['practice', 'ddr'].map((v) => `<label><input type="radio" name="quiz-version-${session}" value="${v}"` +
     `${chosen === v ? ' checked' : ''}> ${PLACE[v]}</label>`).join(' ');
   const rows = questions.map((q, i) => {
     const r = quiz.quiz[q.id];
@@ -43,7 +54,7 @@ export function quizHtml({ session, questions, quiz, picked, drafts }) {
       `<span class="verdict${r ? (r.correct ? ' ok' : ' no') : ''}" role="status">${r ? answeredText(r, 'recorded') : ''}</span></form></li>`;
   }).join('');
   const score = done.length ? `Score: ${right} of ${done.length} answered correctly${done.length === questions.length ? ' (final)' : ''}` : '';
-  return `<p class="meta">Session ${session} quiz, open until 12:15 PM Pacific. One try per question: your first answer counts.</p>` +
+  return `<p class="meta">Session ${session} quiz${close ? `, open until ${close}` : ''}. One try per question: your first answer counts.</p>` +
     `<fieldset class="versions"${locked ? ' disabled' : ''}><legend>Answer from</legend>${radios}</fieldset>` +
     `<p class="small">${note}</p><ol class="items">${rows}</ol><p class="score">${score}</p>`;
 }

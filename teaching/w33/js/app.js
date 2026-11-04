@@ -4,7 +4,7 @@ import { ENDPOINT, SESSIONS, TODAY } from './config.js';
 import { decryptDatabase, normalizeUsername, unwrapKey } from './gate.js';
 import { esc } from './html.js';
 import { friendlyError } from './messages.js';
-import { MAYBE_RECORDED, PLACE, answeredText, confirmText, quizHtml, quizVersion } from './quizview.js';
+import { MAYBE_RECORDED, PLACE, answeredText, closeText, confirmText, quizHtml, quizVersion } from './quizview.js';
 
 const STORE = 'w33-user';
 const TIMEOUT_MS = 20000;
@@ -273,29 +273,35 @@ async function check(form, id) {
   }
 }
 
-function quizSession() {
+/** Every quiz open now (they can overlap), or the one asked for with ?preview=quiz&session=N. */
+function quizSessions() {
   const now = Date.now();
-  const live = SESSIONS.find((s) => now >= Date.parse(s.open) && now <= Date.parse(s.close));
-  if (live) return live;
-  return params.get('preview') === 'quiz' ? SESSIONS.find((s) => String(s.session) === (params.get('session') || '1')) : null;
+  const live = SESSIONS.filter((s) => now >= Date.parse(s.open) && now <= Date.parse(s.close));
+  if (live.length) return live;
+  const preview = params.get('preview') === 'quiz' && SESSIONS.find((s) => String(s.session) === (params.get('session') || '1'));
+  return preview ? [preview] : [];
 }
 
+/** The open quiz a question belongs to (Q2.3 is in Session 2's quiz), or undefined once it has closed. */
+const quizOf = (id) => quizSessions().find((s) => `Q${s.session}.` === String(id).slice(0, String(s.session).length + 2));
+
 function renderQuiz() {
-  const s = quizSession();
+  const live = quizSessions();
   const box = $('quiz-body');
-  if (!s) {
-    box.innerHTML = '<p class="meta">Each quiz opens during the last part of its session: 10:30 AM to 12:15 PM Pacific on Tue 3, ' +
-      'Wed 4 and Thu 5 November. Five questions, one try each; your score appears as you answer.</p>';
+  if (!live.length) {
+    const last = SESSIONS.map((s) => s.close).sort().pop();
+    box.innerHTML = `<p class="meta">${Date.now() > Date.parse(last) ? `The quizzes closed at ${closeText(last)}.`
+      : 'The quizzes are not open yet.'} Five questions each, one try per question.</p>`;
     return;
   }
-  const questions = items.filter((it) => it.kind === 'quiz' && it.session === s.session);
-  box.innerHTML = quizHtml({ session: s.session, questions, quiz, picked, drafts });
+  box.innerHTML = live.map((s) => quizHtml({ session: s.session, questions: items.filter((it) => it.kind === 'quiz' && it.session === s.session),
+    quiz, picked, drafts, close: closeText(s.close) })).join('');
 }
 
 const quizForm = (id) => document.querySelector(`#quiz-body li[data-id="${CSS.escape(id)}"] form`);
 
 async function refreshQuiz() {
-  if (!quizSession()) return renderQuiz();
+  if (!quizSessions().length) return renderQuiz();
   try {
     const r = await api.post({ action: 'status', username: user });
     if (r.status === 'ok') quiz = { quiz: r.quiz, versions: r.versions };
@@ -314,11 +320,12 @@ const QUIZ_MESSAGES = {
 };
 
 async function submitQuiz(form, id) {
-  const s = quizSession();
-  const version = s && quizVersion(s.session, quiz, picked);
+  const s = quizOf(id);
   const input = form.querySelector('input');
   const btn = form.querySelector('button[type=submit]');
   const cancel = form.querySelector('.cancel');
+  if (!s) return setVerdict(form, QUIZ_MESSAGES.closed, 'no'); // it closed while the page was open
+  const version = quizVersion(s.session, quiz, picked);
   if (!version) return setVerdict(form, 'First choose above whether you answer from the DDR or the practice database.', 'no');
   if (!WHOLE.test(input.value.replace(/[\s,]/g, ''))) return setVerdict(form, QUIZ_MESSAGES.invalid, 'no');
   if (!btn.classList.contains('confirm')) { // the first click asks, naming the version; the second sends
@@ -396,9 +403,9 @@ document.addEventListener('submit', (ev) => {
   else check(form, id);
 });
 document.addEventListener('change', (ev) => {
-  const s = quizSession();
-  if (ev.target.name !== 'quiz-version' || !s) return;
-  picked[String(s.session)] = ev.target.value;
+  const m = /^quiz-version-(\d+)$/.exec(ev.target.name || ''); // each quiz's radio group is named after its session
+  if (!m) return;
+  picked[m[1]] = ev.target.value;
   renderQuiz();
 });
 document.addEventListener('input', (ev) => {

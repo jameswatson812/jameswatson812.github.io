@@ -6,10 +6,14 @@ export const ENDPOINT = 'https://script.google.com/macros/s/AKfycbyHv0CwMuCLn4nu
 // GETDATE() on the practice database: its data end on this day.
 export const TODAY = '2026-10-31 16:00:00';
 
-// Sessions run 9:00 AM-12:00 PM Pacific (PST, after daylight time ends on 1 Nov). Quizzes are open
-// from 10:30 AM to 12:15 PM on their session day; the grader holds the same instants.
+// Sessions run 9:00 AM-12:00 PM Pacific (PST, after daylight time ends on 1 Nov). All three quizzes are
+// open from the start of 3 November until 11:59:59 PM on Sunday 8 November; the grader holds the same
+// instants, and the page shows every quiz that is open.
+const OPEN = '2026-11-03T00:00:00-08:00';
+const CLOSE = '2026-11-08T23:59:59-08:00';
+const EMAIL = '2026-11-09T00:05:00-08:00';
 export const SESSIONS = [
-  { session: 1, date: '2026-11-03', open: '2026-11-03T10:30:00-08:00', close: '2026-11-03T12:15:00-08:00', email: '2026-11-03T12:20:00-08:00' },
-  { session: 2, date: '2026-11-04', open: '2026-11-04T10:30:00-08:00', close: '2026-11-04T12:15:00-08:00', email: '2026-11-04T12:20:00-08:00' },
-  { session: 3, date: '2026-11-05', open: '2026-11-05T10:30:00-08:00', close: '2026-11-05T12:15:00-08:00', email: '2026-11-05T12:20:00-08:00' },
+  { session: 1, date: '2026-11-03', open: OPEN, close: CLOSE, email: EMAIL },
+  { session: 2, date: '2026-11-04', open: OPEN, close: CLOSE, email: EMAIL },
+  { session: 3, date: '2026-11-05', open: OPEN, close: CLOSE, email: EMAIL },
 ];
