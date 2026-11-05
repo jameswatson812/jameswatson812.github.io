@@ -96,36 +96,6 @@
     "prompt": "With the two result sets swapped, how many rows does EXCEPT return (patients aged 26 to 30)?"
   },
   {
-    "id": "Q2.1",
-    "session": 2,
-    "kind": "quiz",
-    "prompt": "How many distinct patients have the ICD-10-CM diagnosis I25.10, from any source?"
-  },
-  {
-    "id": "Q2.2",
-    "session": 2,
-    "kind": "quiz",
-    "prompt": "How many encounters in 2022 took place at departments whose location name contains RONALD REAGAN? Count each encounter once."
-  },
-  {
-    "id": "Q2.3",
-    "session": 2,
-    "kind": "quiz",
-    "prompt": "How many patients had at least 3 encounters in 2023?"
-  },
-  {
-    "id": "Q2.4",
-    "session": 2,
-    "kind": "quiz",
-    "prompt": "Take each patient's first LDL-C result in 2022 (LOINC 13457-7 or 18262-6). For how many patients was it 190 mg/dL or more?"
-  },
-  {
-    "id": "Q2.5",
-    "session": 2,
-    "kind": "quiz",
-    "prompt": "How many patients had a statin order in 2023? (A statin's generic name contains 'vastatin'.)"
-  },
-  {
     "id": "E5a.3",
     "session": 2,
     "kind": "exercise",
@@ -204,69 +174,63 @@
     "prompt": "Attrition table, step 3: of the adults, how many had no statin order in the 365 days before their first 2022 LDL-C result?"
   },
   {
-    "id": "Q3.1",
+    "id": "Q2.6",
+    "session": 2,
+    "kind": "quiz",
+    "prompt": "How many distinct patients have the ICD-10-CM diagnosis I10 (essential hypertension), from any source?"
+  },
+  {
+    "id": "Q2.7",
+    "session": 2,
+    "kind": "quiz",
+    "prompt": "How many patients had at least 5 encounters in 2022?"
+  },
+  {
+    "id": "Q2.8",
+    "session": 2,
+    "kind": "quiz",
+    "prompt": "How many encounters in 2021 took place at departments whose location name contains SANTA MONICA? Count each encounter once."
+  },
+  {
+    "id": "Q3.6",
     "session": 3,
     "kind": "quiz",
-    "prompt": "How many distinct biobank samples were collected in 2021?"
+    "prompt": "How many distinct biobank samples were collected in 2020?"
   },
   {
-    "id": "Q3.2",
+    "id": "Q3.7",
     "session": 3,
     "kind": "quiz",
-    "prompt": "How many genotyped samples have a sex-match flag of 0, meaning the recorded and genetic sex differ or one of them is unknown?"
+    "prompt": "How many genotyped SNPs lie in APOB, the gene of the main protein of LDL particles: chromosome 2, positions 21,224,301 to 21,266,945 (GRCh37), ends included?"
   },
   {
-    "id": "Q3.3",
+    "id": "Q3.8",
     "session": 3,
     "kind": "quiz",
-    "prompt": "How many genotyped samples come from patients with the ICD-10-CM diagnosis E11.9, from any source?"
+    "prompt": "How many genotyped samples come from patients with the ICD-10-CM diagnosis E78.5 (hyperlipidemia, unspecified), from any source?"
   },
   {
-    "id": "Q3.4",
-    "session": 3,
-    "kind": "quiz",
-    "prompt": "How many genotyped SNPs lie on chromosome 19 between positions 11,200,000 and 11,245,000 (GRCh37), ends included?"
-  },
-  {
-    "id": "Q3.5",
-    "session": 3,
-    "kind": "quiz",
-    "prompt": "How many patients have a biobank sample and at least one LDL-C result (LOINC 13457-7 or 18262-6) of 190 mg/dL or more?"
-  },
-  {
-    "id": "E11.1a",
+    "id": "E11.1",
     "session": 3,
     "kind": "exercise",
-    "prompt": "How many biobank samples are there?"
+    "prompt": "How many patients have at least one biobank sample?"
   },
   {
-    "id": "E11.1b",
+    "id": "E11.2",
     "session": 3,
     "kind": "exercise",
-    "prompt": "How many genotyped samples are there?"
+    "prompt": "How many genotyped samples pass QC: not excluded, and with recorded and genetic sex matching?"
   },
   {
-    "id": "E11.2a",
+    "id": "E12.1",
     "session": 3,
     "kind": "exercise",
-    "prompt": "How many biobank samples belong to a patient with patient information?"
+    "prompt": "Run the query on the slide: how many genotyped samples come from patients with the ICD-10-CM diagnosis I25.10?"
   },
   {
-    "id": "E11.2b",
+    "id": "E12.2",
     "session": 3,
     "kind": "exercise",
-    "prompt": "How many genotyped samples belong to a patient with patient information?"
-  },
-  {
-    "id": "E11.4",
-    "session": 3,
-    "kind": "exercise",
-    "prompt": "How many biobank samples belong to patients who also have a genotyped sample?"
-  },
-  {
-    "id": "E11.5",
-    "session": 3,
-    "kind": "exercise",
-    "prompt": "How many genotyped samples come from patients with coronary artery disease (ICD-10-CM I25.10)?"
+    "prompt": "Count biobank samples instead of genotyped ones: how many biobank samples come from patients with I25.10?"
   }
 ]
