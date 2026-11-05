@@ -201,7 +201,7 @@
     "id": "Q3.7",
     "session": 3,
     "kind": "quiz",
-    "prompt": "How many genotyped SNPs lie in APOB, the gene of the main protein of LDL particles: chromosome 2, positions 21,224,301 to 21,266,945 (GRCh37), ends included?"
+    "prompt": "How many distinct SNPs (count each RSId once) lie in APOB, the gene of the main protein of LDL particles: chromosome 2, positions 21,224,301 to 21,266,945 (GRCh37), ends included?"
   },
   {
     "id": "Q3.8",
